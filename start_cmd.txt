@@ -11,8 +11,9 @@ geth --datadir "E:/PFE/devnet/insurance" --port 30314 --ipcdisable --rpc --rpcpo
 geth --datadir "E:/PFE/devnet/clearing_house" --port 30315 --ipcdisable --rpc --rpcport 8560 --rpcapi="admin,db,eth,debug,miner,net,shh,txpool,personal,web3" --rpccorsdomain "*" --nodiscover --networkid 1515 --gasprice '1' --targetgaslimit 94000000 -unlock '0x64fa8629ebfdb5cf74f6c3d1f684e6694468cc3d' --password E:/PFE/devnet/clearing_house/password.txt console
 
 
-geth attach http://127.0.0.1:8511
+geth attach http://127.0.0.1:8520
 miner.start()
 admin.peers
 miner.stop()
 exit
+cls 

@@ -61,7 +61,7 @@ app.get('/getAccounts', (req, res) => {
 
 app.get('/getTokenBalance', (req, res) => {
 
-    res.json(myContract.balanceOf(accounts[0],{from:accounts[0],
+    res.json(myContract.balanceOf(accounts[0],{from:(accounts[0],
          gas:3000000 }));
 
 });

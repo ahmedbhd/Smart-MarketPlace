@@ -20,21 +20,21 @@ function deploySC (){
     console.log("my account: "+accounts[0]);
 
     console.log("Contract deployment")
-    MyContractDeployment = web3.eth.contract(JSON.parse(interface));
-    myContract = MyContractDeployment.new(accounts[0], {
+    MyContract = web3.eth.contract(JSON.parse(interface));
+    myContractReturned = MyContract.new(accounts[0], {
         from:accounts[0],
         data:'0x'+bytecode,
-        gas:5000000}, function(err, MyContractDeployment){
+        gas:5000000}, function(err, myContract){
         if(!err) {
             // NOTE: The callback will fire twice!
             // Once the contract has the transactionHash property set and once its deployed on an address.
             // e.g. check tx hash on the first call (transaction send)
-            if(!MyContractDeployment.address) {
-                console.log("The hash of the transaction :"+MyContractDeployment.transactionHash) // The hash of the transaction, which deploys the contract
+            if(!myContract.address) {
+                console.log("The hash of the transaction :"+myContract.transactionHash) // The hash of the transaction, which deploys the contract
             
             // check address on the second call (contract deployed)
             } else {
-                console.log("contract address :"+MyContractDeployment.address) // the contract address
+                console.log("contract address :"+myContract.address) // the contract address
             }
             // Note that the returned "myContractReturned" === "myContract",
             // so the returned "myContractReturned" object will also get the address set.
@@ -61,7 +61,7 @@ app.get('/getAccounts', (req, res) => {
 
 app.get('/getTokenBalance', (req, res) => {
 
-    res.json(myContract.balanceOf(accounts[0],{from:accounts[0],
+    res.json(myContract.balanceOf(accounts[0],{from:account,
          gas:3000000 }));
 
 });

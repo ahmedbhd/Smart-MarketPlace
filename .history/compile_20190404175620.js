@@ -18,4 +18,4 @@ var input = {
 };
 
 // console.log(solc.compile ({sources: input},1).contracts['Food.sol:Food'])
-module.exports = solc.compile ({sources: input},1).contracts['STToken.sol:STToken'];
+module.exports = solc.compile ({sources: input},1).contracts['test.sol:test'];

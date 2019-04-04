@@ -15,33 +15,35 @@ var myContract = null;
 var accounts = null;
 
 
-function deploySC (){
+async function deploySC (){
     accounts = web3.eth.accounts
     console.log("my account: "+accounts[0]);
 
-    console.log("Contract deployment")
-    MyContractDeployment = web3.eth.contract(JSON.parse(interface));
-    myContract = MyContractDeployment.new(accounts[0], {
+    let MyContract = web3.eth.contract(JSON.parse(interface));
+    myContractReturned = MyContract.new(200, {
         from:accounts[0],
         data:'0x'+bytecode,
-        gas:5000000}, function(err, MyContractDeployment){
+        gas:500000}, function(err, myContract){
         if(!err) {
             // NOTE: The callback will fire twice!
             // Once the contract has the transactionHash property set and once its deployed on an address.
             // e.g. check tx hash on the first call (transaction send)
-            if(!MyContractDeployment.address) {
-                console.log("The hash of the transaction :"+MyContractDeployment.transactionHash) // The hash of the transaction, which deploys the contract
+            if(!myContract.address) {
+                console.log(myContract.transactionHash) // The hash of the transaction, which deploys the contract
             
             // check address on the second call (contract deployed)
             } else {
-                console.log("contract address :"+MyContractDeployment.address) // the contract address
+                console.log(myContract.address) // the contract address
             }
             // Note that the returned "myContractReturned" === "myContract",
             // so the returned "myContractReturned" object will also get the address set.
-        } else {
-            console.log("deploy error :"+err)
         }
     });
+
+    //This print contract address on successful deployment
+    return {
+        address: contractInstance.options.address
+    };
 }
 
 
@@ -56,13 +58,6 @@ app.use('/', express.static('public_static'));
 app.get('/getAccounts', (req, res) => {
 
     res.send(accounts);
-
-});
-
-app.get('/getTokenBalance', (req, res) => {
-
-    res.json(myContract.balanceOf(accounts[0],{from:accounts[0],
-         gas:3000000 }));
 
 });
 
@@ -94,5 +89,14 @@ var server = app.listen(port, () => {
     // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
   
     console.log("Express Listening at http://localhost:" + port);
-    deploySC();
+    deploySC()
+        .then(result => {
+            myContractAddress = result.address;
+            console.log('SC Address ' +result.address);
+            myContract = new web3.eth.Contract(JSON.parse(interface), /* myContractAddress */ "0x27a2311D83061C7B51666CcaE9aC9914ec74a84d");
+            //events.subscribeLogEvent(myContract , "Event");
+        })
+        .catch(err => console.error(err));
+        //myContract = new web3.eth.Contract(JSON.parse(interface), /* myContractAddress */ "0x27a2311D83061C7B51666CcaE9aC9914ec74a84d");   
+        
 });
