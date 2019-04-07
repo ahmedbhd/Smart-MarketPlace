@@ -171,8 +171,6 @@ function initiateEvents(){
             proxyContract.transferHouseFrom(owner,buyer,result.args._homeIndex,currentBuyerBalance,
                 {from:clearingHouseAccount,gas:3000000 });
             tokenContract.transfer(owner,price,{from:buyer,gas:3000000 });
-        }else{
-            proxyContract.revertPurchaseOf(result.args._homeIndex,{from:buyer,gas:3000000 });
         }
     } else {
         console.log(error);

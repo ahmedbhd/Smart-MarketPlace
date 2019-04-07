@@ -53,8 +53,4 @@ contract Home {
     function setBuyer(address _wanter) public{
         _buyer = _wanter;
     }
-    function revertPurchase() public{
-        _buyer = address(0);
-        _state =1;
-    }
 }

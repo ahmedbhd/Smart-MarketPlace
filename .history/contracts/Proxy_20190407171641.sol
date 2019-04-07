@@ -77,12 +77,6 @@ contract Proxy{
         require(_price >= _homes[_index].getPrice());
         return (_homes[_index].transfer(_from,_to));
     }
-    // transfer the ownership of the wanted house to the buyer
-    function revertPurchaseOf(uint256 _index) public returns(bool){
-        require(address(0)!=msg.sender);
-        _homes[_index].revertPurchase();
-        return (true);
-    }
     event Wanted (
         address _from,
         uint256 _homeIndex

@@ -165,15 +165,12 @@ function initiateEvents(){
         let owner = homeToBeSold[3];
         let buyer = homeToBeSold[5];
         let price = homeToBeSold[2];
+        tokenContract.transferFrom(buyer,owner,price,{from:clearingHouseAccount,gas:3000000 });
         //recheck buyer balance for double spending 
         let currentBuyerBalance = tokenContract.balanceOf(buyer,{from: clearingHouseAccount, gas:3000000 });
-        if (currentBuyerBalance >= price){
-            proxyContract.transferHouseFrom(owner,buyer,result.args._homeIndex,currentBuyerBalance,
-                {from:clearingHouseAccount,gas:3000000 });
-            tokenContract.transfer(owner,price,{from:buyer,gas:3000000 });
-        }else{
-            proxyContract.revertPurchaseOf(result.args._homeIndex,{from:buyer,gas:3000000 });
-        }
+        proxyContract.transferFrom(owner,buyer,result.args._homeIndex,currentBuyerBalance,
+            {from:clearingHouseAccount,gas:3000000 });
+        
     } else {
         console.log(error);
     }

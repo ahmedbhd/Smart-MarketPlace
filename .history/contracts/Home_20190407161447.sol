@@ -15,7 +15,7 @@ contract Home {
         _owner = owner;
         _state = 1;
     }
-    function transfer(address _from, address _to) public returns(bool) {
+    function transferFrom(address _from, address _to) public returns(bool) {
         require(_owner == _from);
         _owner = _to;
         _state = 3;
@@ -52,9 +52,5 @@ contract Home {
     }
     function setBuyer(address _wanter) public{
         _buyer = _wanter;
-    }
-    function revertPurchase() public{
-        _buyer = address(0);
-        _state =1;
     }
 }

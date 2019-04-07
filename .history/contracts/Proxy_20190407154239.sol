@@ -53,9 +53,8 @@ contract Proxy{
         return (_tab);
     }
     // the buyer invokes this function to initiate a purchase and notifies the clearing house
-    function setHomeAtAsWanted (uint256 _index,uint256 _price) public {
+    function setHomeAtAsWanted (uint256 _index) public {
         require(address(0)!=msg.sender);
-        require(_price >= _homes[_index].getPrice());
         emit Wanted(msg.sender,_index);
     }
     // the clearing house creates a purchase and notifies the seller
@@ -69,19 +68,6 @@ contract Proxy{
     function setHomeAsConfirmed(uint256 _index) public {
         require(address(0)!=msg.sender);
         emit Confirmed(_index);
-    }
-    // transfer the ownership of the wanted house to the buyer
-    function transferHouseFrom(address _from, address _to,uint256 _index,uint256 _price) public returns(bool){
-        require(address(0)!=msg.sender);
-        require(_index<=_homesNumber);
-        require(_price >= _homes[_index].getPrice());
-        return (_homes[_index].transfer(_from,_to));
-    }
-    // transfer the ownership of the wanted house to the buyer
-    function revertPurchaseOf(uint256 _index) public returns(bool){
-        require(address(0)!=msg.sender);
-        _homes[_index].revertPurchase();
-        return (true);
     }
     event Wanted (
         address _from,

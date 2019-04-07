@@ -37,9 +37,6 @@ app.get('/getMyAccount', (req, res) => {
     res.send(sellerAccount);
 
 });
-app.get('/getMyBalance', (req, res) => {
-    res.send(tokenContract.balanceOf(sellerAccount,{from: sellerAccount, gas:3000000 }));
-});
 
 app.post('/addHome', (req, res) => {
 
@@ -58,10 +55,9 @@ app.get('/getMyPendingHomes', (req, res) => {
         let tab = homesNbr.split(";");
         tab.forEach(function (item) {
             console.log("homesNbr :"+item);
-            let thisHome = proxyContract.getHomeAt(item,{from:sellerAccount,
+            let thisHome = proxyContract.getHomeAt(i,{from:buyerAccount,
                 gas:3000000 });
                 homes.push( {
-                    "indexHome": item,
                     "Location" : thisHome[0],
                     "Area": thisHome[1],
                     "price": thisHome[2],

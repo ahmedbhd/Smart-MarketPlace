@@ -37,9 +37,6 @@ app.get('/getMyAccount', (req, res) => {
     res.send(sellerAccount);
 
 });
-app.get('/getMyBalance', (req, res) => {
-    res.send(tokenContract.balanceOf(sellerAccount,{from: sellerAccount, gas:3000000 }));
-});
 
 app.post('/addHome', (req, res) => {
 
