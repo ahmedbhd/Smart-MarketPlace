@@ -178,14 +178,8 @@ function initiateEvents(){
             tokenContract.transfer(owner,price,{from:buyer,gas:3000000 });
         }else{
             console.log("purchase refused "+buyerBalance+" "+price)
-            proxyContract.revertPurchaseOf(result.args._homeIndex,{from:buyer,gas:3000000 }, function (error, result) {
-                if (!error){
-                    res.json(result);
-                }else {
-                    console.log("wanted "+error);
-                }
-               }); 
-            }
+            proxyContract.revertPurchaseOf(result.args._homeIndex,{from:buyer,gas:3000000 });
+        }
     } else {
         console.log(error);
     }

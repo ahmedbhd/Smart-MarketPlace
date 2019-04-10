@@ -66,11 +66,11 @@ app.get('/getMyPendingHomes', (req, res) => {
                 gas:3000000 });
                 homes.push( {
                     "indexHome": item,
-                    "location" : thisHome[0],
-                    "area": thisHome[1],
+                    "Location" : thisHome[0],
+                    "Area": thisHome[1],
                     "price": thisHome[2],
-                    "owner" :thisHome[3],
-                    "state": thisHome[4],
+                    "Owner" :thisHome[3],
+                    "State": thisHome[4],
                     "buyer": thisHome[5]
                 })
         });

@@ -86,12 +86,6 @@ contract Proxy{
         require(address(0)!=msg.sender);
         emit Confirmed(_index);
     }
-    // the seller confirmes the purchase and notifies back the clearing house
-    function setHomeAsCanceled(uint256 _index) public returns (bool) {
-        require(address(0)!=msg.sender);
-        _homes[_index].setCanceled();
-        return true;
-    }
     // transfer the ownership of the wanted house to the buyer
     function transferHouseFrom(address _from, address _to,uint256 _index,uint256 _price) public returns(bool){
         require(address(0)!=msg.sender);

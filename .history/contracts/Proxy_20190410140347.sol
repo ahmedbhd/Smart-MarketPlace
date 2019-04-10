@@ -27,9 +27,8 @@ contract Proxy{
         return _purchasesNumber;
     } */
     function getHomeAt(uint256 _index) public view returns(string memory, string memory, uint, address, uint, address ){
-        return (
+        return (_homes[_index].getArea(),
             _homes[_index].getLocation(),
-            _homes[_index].getArea(),
             _homes[_index].getPrice(),
             _homes[_index].getOwner(),
             _homes[_index].getState(),
@@ -85,12 +84,6 @@ contract Proxy{
     function setHomeAsConfirmed(uint256 _index) public {
         require(address(0)!=msg.sender);
         emit Confirmed(_index);
-    }
-    // the seller confirmes the purchase and notifies back the clearing house
-    function setHomeAsCanceled(uint256 _index) public returns (bool) {
-        require(address(0)!=msg.sender);
-        _homes[_index].setCanceled();
-        return true;
     }
     // transfer the ownership of the wanted house to the buyer
     function transferHouseFrom(address _from, address _to,uint256 _index,uint256 _price) public returns(bool){

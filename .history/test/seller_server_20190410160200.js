@@ -66,11 +66,11 @@ app.get('/getMyPendingHomes', (req, res) => {
                 gas:3000000 });
                 homes.push( {
                     "indexHome": item,
-                    "location" : thisHome[0],
-                    "area": thisHome[1],
+                    "Location" : thisHome[0],
+                    "Area": thisHome[1],
                     "price": thisHome[2],
-                    "owner" :thisHome[3],
-                    "state": thisHome[4],
+                    "Owner" :thisHome[3],
+                    "State": thisHome[4],
                     "buyer": thisHome[5]
                 })
         });
@@ -107,12 +107,6 @@ app.get('/getMyHomes', (req, res) => {
 app.post('/setConfirmed', (req, res) => {
     
     res.json(proxyContract.setHomeAsConfirmed(req.body.homeIndex,{from:sellerAccount,gas:3000000 }));
-
-});
-
-app.post('/setCanceled', (req, res) => {
-    
-    res.json(proxyContract.setHomeAsCanceled(req.body.homeIndex,{from:sellerAccount,gas:3000000 }));
 
 });
 

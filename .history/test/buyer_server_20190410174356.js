@@ -51,11 +51,11 @@ app.get('/getHomeAt', (req, res) => {
         gas:3000000 });
    
     let homeJSON = {
-        "location" : thisHome[0],
-        "area": thisHome[1],
+        "Location" : thisHome[0],
+        "Area": thisHome[1],
         "price": thisHome[2],
-        "state": thisHome[3],
-        "owner" : thisHome[4],
+        "State": thisHome[3],
+        "Owner" : thisHome[4],
         "buyer": thisHome[5]
     }
     res.json(homeJSON);
@@ -75,11 +75,11 @@ app.get('/getHomes', (req, res) => {
         if (state==1)
             homes.push( {
                 "indexHome": i,
-                "location" : thisHome[0],
-                "area": thisHome[1],
+                "Location" : thisHome[0],
+                "Area": thisHome[1],
                 "price": thisHome[2],
-                "owner" :thisHome[3],
-                "state": state,
+                "Owner" :thisHome[3],
+                "State": state,
                 "buyer": thisHome[5]
             })
     }
@@ -90,16 +90,7 @@ app.get('/getHomes', (req, res) => {
 app.post('/setWanted', (req, res) => {
     let myBalance = tokenContract.balanceOf(buyerAccount,{from: buyerAccount, gas:3000000 });
     console.log("index :"+req.body.homeIndex+" balance :"+myBalance);
-   proxyContract.setHomeAtAsWanted(req.body.homeIndex,myBalance,{from:buyerAccount,gas:3000000 }, function (error, result) {
-    if (!error){
-        res.json(result);
-    }else {
-        console.log("wanted "+error);
-        res.status(400).send({
-            message: error
-         });
-    }
-   });
+    res.json(proxyContract.setHomeAtAsWanted(req.body.homeIndex,myBalance,{from:buyerAccount,gas:3000000 }));
 });
 
 var server = app.listen(port, () => {

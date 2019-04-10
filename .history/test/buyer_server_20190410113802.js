@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const port = 3002 || process.env.PORT;
 const bodyParser = require('body-parser');
-const cors = require('cors');
 
 const assert = require ('assert');
 
@@ -33,11 +32,10 @@ app.use(bodyParser.json());
 
 
 app.use('/', express.static('public_static'));
-app.use(cors());
 
 app.get('/getMyAccount', (req, res) => {
 
-    res.json(buyerAccount);
+    res.json(buyerAddress);
 
 });
 
@@ -47,16 +45,15 @@ app.get('/getMyBalance', (req, res) => {
 
 app.get('/getHomeAt', (req, res) => {
     
-    let thisHome = proxyContract.getHomeAt(req.body.homeIndex, {from: buyerAccount,
+    let homeAddress = proxyContract.getHomeAt(req.body.homeIndex, {from: clearingHouseAccount,
         gas:3000000 });
-   
+    let thisHome = home.at(homeAddress);
     let homeJSON = {
-        "location" : thisHome[0],
-        "area": thisHome[1],
-        "price": thisHome[2],
-        "state": thisHome[3],
-        "owner" : thisHome[4],
-        "buyer": thisHome[5]
+        "Location" : thisHome.getLocation({from: clearingHouseAccount, gas:3000000 }),
+        "Area": thisHome.getArea({from: clearingHouseAccount, gas:3000000 }),
+        "price": thisHome.getPrice({from: clearingHouseAccount, gas:3000000 }),
+        "State": thisHome.getState({from: clearingHouseAccount, gas:3000000 }),
+        "Owner" : thisHome.getOwner({from: clearingHouseAccount, gas:3000000 })
     }
     res.json(homeJSON);
 
@@ -75,12 +72,11 @@ app.get('/getHomes', (req, res) => {
         if (state==1)
             homes.push( {
                 "indexHome": i,
-                "location" : thisHome[0],
-                "area": thisHome[1],
+                "Location" : thisHome[0],
+                "Area": thisHome[1],
                 "price": thisHome[2],
-                "owner" :thisHome[3],
-                "state": state,
-                "buyer": thisHome[5]
+                "Owner" :thisHome[3],
+                "State": state
             })
     }
     res.json(homes);
@@ -89,17 +85,7 @@ app.get('/getHomes', (req, res) => {
 
 app.post('/setWanted', (req, res) => {
     let myBalance = tokenContract.balanceOf(buyerAccount,{from: buyerAccount, gas:3000000 });
-    console.log("index :"+req.body.homeIndex+" balance :"+myBalance);
-   proxyContract.setHomeAtAsWanted(req.body.homeIndex,myBalance,{from:buyerAccount,gas:3000000 }, function (error, result) {
-    if (!error){
-        res.json(result);
-    }else {
-        console.log("wanted "+error);
-        res.status(400).send({
-            message: error
-         });
-    }
-   });
+    res.json(proxyContract.setHomeAtAsWanted(req.body.homeIndex,myBalance,{from:buyerAccount,gas:3000000 }));
 });
 
 var server = app.listen(port, () => {

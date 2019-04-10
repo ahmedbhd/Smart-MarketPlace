@@ -29,10 +29,10 @@ ioClient.on("proxyAddress",function(data){
 
 
 app.use(bodyParser.json());
+app.use(cors());
 
 
 app.use('/', express.static('public_static'));
-app.use(cors());
 
 app.get('/getMyAccount', (req, res) => {
     console.log("getMyAccount");
@@ -40,14 +40,12 @@ app.get('/getMyAccount', (req, res) => {
 
 });
 app.get('/getMyBalance', (req, res) => {
-    console.log("getMyBalance");
-
     res.json(tokenContract.balanceOf(sellerAccount,{from: sellerAccount, gas:3000000 }));
 });
 
 app.post('/addHome', (req, res) => {
 
-    res.json(proxyContract.addHome(req.body.location, req.body.area, req.body.price,{from:sellerAccount,
+    res.json(proxyContract.addHome(req.body.area, req.body.location, req.body.price,{from:sellerAccount,
          gas:3000000 }));
 
 });
@@ -66,38 +64,11 @@ app.get('/getMyPendingHomes', (req, res) => {
                 gas:3000000 });
                 homes.push( {
                     "indexHome": item,
-                    "location" : thisHome[0],
-                    "area": thisHome[1],
+                    "Location" : thisHome[0],
+                    "Area": thisHome[1],
                     "price": thisHome[2],
-                    "owner" :thisHome[3],
-                    "state": thisHome[4],
-                    "buyer": thisHome[5]
-                })
-        });
-    }
-    res.json(homes);
-});
-
-app.get('/getMyHomes', (req, res) => {
-    let homes =[]
-    let homesNbr = proxyContract.getMyHomes({from:sellerAccount,gas:3000000 });
-    if (homesNbr!=""){
-        homesNbr = homesNbr.slice(0,homesNbr.length-1);
-        console.log("homesNbr :"+homesNbr);
-
-        let tab = homesNbr.split(";");
-        tab.forEach(function (item) {
-            console.log("homesNbr :"+item);
-            let thisHome = proxyContract.getHomeAt(item,{from:sellerAccount,
-                gas:3000000 });
-                homes.push( {
-                    "indexHome": item,
-                    "location" : thisHome[0],
-                    "area": thisHome[1],
-                    "price": thisHome[2],
-                    "owner" :thisHome[3],
-                    "state": thisHome[4],
-                    "buyer": thisHome[5]
+                    "Owner" :thisHome[3],
+                    "State": thisHome[4]
                 })
         });
     }
@@ -107,12 +78,6 @@ app.get('/getMyHomes', (req, res) => {
 app.post('/setConfirmed', (req, res) => {
     
     res.json(proxyContract.setHomeAsConfirmed(req.body.homeIndex,{from:sellerAccount,gas:3000000 }));
-
-});
-
-app.post('/setCanceled', (req, res) => {
-    
-    res.json(proxyContract.setHomeAsCanceled(req.body.homeIndex,{from:sellerAccount,gas:3000000 }));
 
 });
 

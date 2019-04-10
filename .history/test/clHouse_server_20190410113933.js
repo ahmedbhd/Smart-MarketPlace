@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 const port = 3000 || process.env.PORT;
 const bodyParser = require('body-parser');
-const cors = require('cors');
 
 const assert = require ('assert');
 
@@ -38,15 +37,13 @@ app.use(bodyParser.json());
 
 
 app.use('/', express.static('public_static'));
-app.use(cors());
 
 app.get('/getAccounts', (req, res) => {
-    res.json(accounts);
+    res.send(accounts);
 });
 
 app.post('/chargeAcc', (req, res) => {
-    console.log("acc: "+req.body.receiver+" amount: "+req.body.amount)
-    res.json(tokenContract.transfer(req.body.receiver,req.body.amount,{from: clearingHouseAccount, gas:3000000 }));
+    res.send(tokenContract.transfer(req.body.receiver,req.body.amount,{from: clearingHouseAccount, gas:3000000 }));
 });
 
 app.get('/getHomeAt', (req, res) => {
@@ -161,31 +158,22 @@ function initiateEvents(){
     confirmedEvent.watch(function(error, result){
     if (!error)
     {
-        console.log("home index :"+result.args._homeIndex);
+        console.log(result.args._homeIndex);
         let homeToBeSold = proxyContract.getHomeAt(result.args._homeIndex,{from:clearingHouseAccount,
             gas:3000000 });
         console.log("home  :"+homeToBeSold);
         let owner = homeToBeSold[3];
         let buyer = homeToBeSold[5];
-        let price = parseInt(homeToBeSold[2]);
+        let price = homeToBeSold[2];
         //recheck buyer balance for double spending 
         let currentBuyerBalance = tokenContract.balanceOf(buyer,{from: clearingHouseAccount, gas:3000000 });
-        let buyerBalance = parseInt(currentBuyerBalance);
-        if (buyerBalance >= price){
-            console.log("purchase accepted")
+        if (currentBuyerBalance >= price){
             proxyContract.transferHouseFrom(owner,buyer,result.args._homeIndex,currentBuyerBalance,
                 {from:clearingHouseAccount,gas:3000000 });
             tokenContract.transfer(owner,price,{from:buyer,gas:3000000 });
         }else{
-            console.log("purchase refused "+buyerBalance+" "+price)
-            proxyContract.revertPurchaseOf(result.args._homeIndex,{from:buyer,gas:3000000 }, function (error, result) {
-                if (!error){
-                    res.json(result);
-                }else {
-                    console.log("wanted "+error);
-                }
-               }); 
-            }
+            proxyContract.revertPurchaseOf(result.args._homeIndex,{from:buyer,gas:3000000 });
+        }
     } else {
         console.log(error);
     }

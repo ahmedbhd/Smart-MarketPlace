@@ -50,10 +50,6 @@ contract Home {
     function setPending() public{
         _state = 2;
     }
-    function setCanceled() public{
-        _state = 1;
-        _buyer = address(0);
-    }
     function setBuyer(address _wanter) public{
         _buyer = _wanter;
     }
