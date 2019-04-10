@@ -97,6 +97,7 @@ contract Proxy{
         require(address(0)!=msg.sender);
         require(address(0)!=_to);
         require(_index<=_homesNumber);
+        require(_price >= _homes[_index].getPrice());
         return (_homes[_index].transfer(_from,_to));
     }
     // transfer the ownership of the wanted house to the buyer

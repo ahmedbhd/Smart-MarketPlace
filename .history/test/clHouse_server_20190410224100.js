@@ -177,11 +177,10 @@ function initiateEvents(){
                 {from:clearingHouseAccount,gas:3000000 }, function (error, result) {
                     if (!error){
                         tokenContract.transfer(owner,price,{from:buyer,gas:3000000 });
-                        console.log("transfer success");
                     }else {
-                        console.log("transfer error "+error);
+                        console.log("wanted "+error);
                     }
-                }); 
+                   }); 
            
         }else{
             console.log("purchase refused "+buyerBalance+" "+price)

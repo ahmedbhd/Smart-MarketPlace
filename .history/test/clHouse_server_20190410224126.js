@@ -181,7 +181,7 @@ function initiateEvents(){
                     }else {
                         console.log("transfer error "+error);
                     }
-                }); 
+                   }); 
            
         }else{
             console.log("purchase refused "+buyerBalance+" "+price)
