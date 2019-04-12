@@ -89,11 +89,10 @@ app.get('/getHomes', (req, res) => {
 
 app.post('/setWanted', (req, res) => {
     let myBalance = tokenContract.balanceOf(buyerAccount,{from: buyerAccount, gas:3000000 });
+    console.log("index :"+req.body.homeIndex+" balance :"+myBalance);
     let balance = parseInt(myBalance);
-    let price = parseInt(req.body.homPrice);
-    console.log("index :"+req.body.homeIndex+" balance :"+myBalance+" price :"+price);
-
-    if (price < balance){
+    let price = parseInt(req.body.homeIndex);
+    if (price > balance){
         proxyContract.setHomeAtAsWanted(req.body.homeIndex,myBalance,{from:buyerAccount,gas:3000000 }, function (error, result) {
             if (!error){
                 res.json(result);
@@ -105,9 +104,9 @@ app.post('/setWanted', (req, res) => {
             }
         });
     }else{
-        console.log("not enough balance");
+        console.log("wanted "+error);
                 res.status(400).send({
-                    message: "not enough balance"
+                    message: error
                 });
     }
 });

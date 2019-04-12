@@ -6,7 +6,7 @@ const cors = require('cors');
 
 const assert = require ('assert');
 
-const web3 = require('./cl_web3');
+const cl_web3 = require('./web3');
 const {HomeSC,STTokenSC,ProxySC,STTokenBytecode,ProxyBytecode} = require ('./Contracts');
 
 
@@ -76,7 +76,7 @@ var server = app.listen(port, () => {
     // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
   
     console.log("Express Listening at http://localhost:" + port);
-    accounts = web3.eth.accounts
+    accounts = cl_web3.eth.accounts
     clearingHouseAccount = accounts[0];
     console.log("Clearing house account: "+accounts[0]);
     deploySCProxy();

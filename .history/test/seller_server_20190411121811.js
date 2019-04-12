@@ -47,8 +47,17 @@ app.get('/getMyBalance', (req, res) => {
 
 app.post('/addHome', (req, res) => {
 
-    res.json(proxyContract.addHome(req.body.location, req.body.area, req.body.price,{from:sellerAccount,
-         gas:3000000 }));
+    proxyContract.addHome(req.body.location, req.body.area, req.body.price,{from:sellerAccount,
+         gas:3000000 }), function (error, result) {
+            if (!error){
+                res.json(result);
+            }else {
+                console.log("addHome "+error);
+                res.status(400).send({
+                    message: error
+                 });
+            }
+           };
 
 });
 

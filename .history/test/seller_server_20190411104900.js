@@ -6,7 +6,7 @@ const cors = require('cors');
 
 const assert = require ('assert');
 
-const web3 = require('./seller_web3');
+const seller_web3 = require('./cl_web3');
 const {HomeSC,STTokenSC,ProxySC} = require ('./Contracts');
 
 var proxyContractAddress = null;
@@ -21,7 +21,7 @@ const
     io = require("socket.io-client"),
     ioClient = io.connect("http://localhost:8088");
 ioClient.on("proxyAddress",function(data){
-    
+    console.log("Proxy address: "+data['proxyContractAddress']);
     proxyContractAddress = data['proxyContractAddress'];
     tokenContractAddress = data['tokenContractAddress'];
     deploySCProxy();
@@ -129,7 +129,7 @@ function deploySCProxy (){
     sellerAccount = accounts[9];
     console.log("Seller account: "+sellerAccount);
 
-    console.log("Contract Proxy deployment..."+proxyContractAddress);
+    console.log("Contract Proxy deployment...");
     if (proxyContractAddress){
         proxyContract = ProxySC;
         proxyContract = proxyContract.at(
@@ -143,7 +143,7 @@ function deploySCProxy (){
 }
 function deploySCToken (){
     
-    console.log("Contract STToken deployment..."+tokenContractAddress);
+    console.log("Contract STToken deployment...");
     if (tokenContractAddress){
         tokenContract = STTokenSC;
         tokenContract = tokenContract.at(

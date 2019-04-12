@@ -126,7 +126,7 @@ var server = app.listen(port, () => {
 
 function deploySCProxy (){
     accounts = web3.eth.accounts;
-    sellerAccount = accounts[9];
+    sellerAccount = accounts[0];
     console.log("Seller account: "+sellerAccount);
 
     console.log("Contract Proxy deployment..."+proxyContractAddress);

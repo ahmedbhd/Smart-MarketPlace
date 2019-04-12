@@ -48,7 +48,16 @@ app.get('/getMyBalance', (req, res) => {
 app.post('/addHome', (req, res) => {
 
     res.json(proxyContract.addHome(req.body.location, req.body.area, req.body.price,{from:sellerAccount,
-         gas:3000000 }));
+         gas:3000000 }), function (error, result) {
+            if (!error){
+                res.json(result);
+            }else {
+                console.log("addHome "+error);
+                res.status(400).send({
+                    message: error
+                 });
+            }
+           });
 
 });
 
@@ -126,7 +135,7 @@ var server = app.listen(port, () => {
 
 function deploySCProxy (){
     accounts = web3.eth.accounts;
-    sellerAccount = accounts[9];
+    sellerAccount = accounts[0];
     console.log("Seller account: "+sellerAccount);
 
     console.log("Contract Proxy deployment..."+proxyContractAddress);

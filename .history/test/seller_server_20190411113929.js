@@ -21,7 +21,7 @@ const
     io = require("socket.io-client"),
     ioClient = io.connect("http://localhost:8088");
 ioClient.on("proxyAddress",function(data){
-    
+    console.log("Proxy address: "+data['proxyContractAddress']);
     proxyContractAddress = data['proxyContractAddress'];
     tokenContractAddress = data['tokenContractAddress'];
     deploySCProxy();
@@ -126,10 +126,10 @@ var server = app.listen(port, () => {
 
 function deploySCProxy (){
     accounts = web3.eth.accounts;
-    sellerAccount = accounts[9];
+    sellerAccount = accounts[0];
     console.log("Seller account: "+sellerAccount);
 
-    console.log("Contract Proxy deployment..."+proxyContractAddress);
+    console.log("Contract Proxy deployment...");
     if (proxyContractAddress){
         proxyContract = ProxySC;
         proxyContract = proxyContract.at(
@@ -143,7 +143,7 @@ function deploySCProxy (){
 }
 function deploySCToken (){
     
-    console.log("Contract STToken deployment..."+tokenContractAddress);
+    console.log("Contract STToken deployment...");
     if (tokenContractAddress){
         tokenContract = STTokenSC;
         tokenContract = tokenContract.at(

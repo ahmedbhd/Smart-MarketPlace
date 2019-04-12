@@ -6,7 +6,7 @@ const cors = require('cors');
 
 const assert = require ('assert');
 
-const web3 = require('./buyer_web3');
+const buyer_web3 = require('./web3');
 const {HomeSC,STTokenSC,ProxySC} = require ('./Contracts');
 
 var proxyContract = null;
@@ -89,27 +89,17 @@ app.get('/getHomes', (req, res) => {
 
 app.post('/setWanted', (req, res) => {
     let myBalance = tokenContract.balanceOf(buyerAccount,{from: buyerAccount, gas:3000000 });
-    let balance = parseInt(myBalance);
-    let price = parseInt(req.body.homPrice);
-    console.log("index :"+req.body.homeIndex+" balance :"+myBalance+" price :"+price);
-
-    if (price < balance){
-        proxyContract.setHomeAtAsWanted(req.body.homeIndex,myBalance,{from:buyerAccount,gas:3000000 }, function (error, result) {
-            if (!error){
-                res.json(result);
-            }else {
-                console.log("wanted "+error);
-                res.status(400).send({
-                    message: error
-                });
-            }
-        });
-    }else{
-        console.log("not enough balance");
-                res.status(400).send({
-                    message: "not enough balance"
-                });
+    console.log("index :"+req.body.homeIndex+" balance :"+myBalance);
+   proxyContract.setHomeAtAsWanted(req.body.homeIndex,myBalance,{from:buyerAccount,gas:3000000 }, function (error, result) {
+    if (!error){
+        res.json(result);
+    }else {
+        console.log("wanted "+error);
+        res.status(400).send({
+            message: error
+         });
     }
+   });
 });
 
 var server = app.listen(port, () => {
@@ -117,7 +107,7 @@ var server = app.listen(port, () => {
     // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
   
     console.log("Express Listening at http://localhost:" + port);
-    accounts = web3.eth.accounts;
+    accounts = buyer_web3.eth.accounts;
     buyerAccount = accounts[8];
     console.log("Buyer account: "+buyerAccount);
 

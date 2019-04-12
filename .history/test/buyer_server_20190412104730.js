@@ -90,10 +90,10 @@ app.get('/getHomes', (req, res) => {
 app.post('/setWanted', (req, res) => {
     let myBalance = tokenContract.balanceOf(buyerAccount,{from: buyerAccount, gas:3000000 });
     let balance = parseInt(myBalance);
-    let price = parseInt(req.body.homPrice);
+    let price = parseInt(req.body.homeIndex);
     console.log("index :"+req.body.homeIndex+" balance :"+myBalance+" price :"+price);
 
-    if (price < balance){
+    if (price > balance){
         proxyContract.setHomeAtAsWanted(req.body.homeIndex,myBalance,{from:buyerAccount,gas:3000000 }, function (error, result) {
             if (!error){
                 res.json(result);

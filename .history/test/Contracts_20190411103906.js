@@ -1,4 +1,4 @@
-const web3 = require('./cl_web3');
+const cl_web3 = require('./web3');
 const compiledContracts = require ('../compile');
 
 const STTokenSC = web3.eth.contract(JSON.parse(compiledContracts['STToken.sol:STToken'].interface));
