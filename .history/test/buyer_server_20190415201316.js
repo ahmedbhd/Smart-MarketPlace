@@ -118,7 +118,13 @@ var server = app.listen(port, () => {
   
     console.log("Express Listening at http://localhost:" + port);
     accounts = web3.eth.accounts;
-    buyerAccount = accounts[8];
+    buyerAccount = accounts[2];
+    try {
+        web3.personal.unlockAccount(buyerAccount, "123456789");
+    } catch(e) {
+        console.log(e);
+        return;
+    }
     console.log("Buyer account: "+buyerAccount);
 
 });

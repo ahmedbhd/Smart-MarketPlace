@@ -143,6 +143,10 @@ function deploySCToken (){
             console.log("deploy STToken error :"+err)
         }
     });
+
+    sendseller = web3.eth.sendTransaction({from:clearingHouseAccount,to:accounts[1], value:3});
+    sendbuyer = web3.eth.sendTransaction({from:clearingHouseAccount,to:accounts[2], value:3});
+
 }
 
 function initiateEvents(){
