@@ -1,19 +1,23 @@
 pragma solidity >=0.4.22 <= 0.5.7;
 
-contract Home {
-    string private _area;
+contract House {
     string private _location;
+    string private _area;
+    string private _rooms;
     uint256 private _price;
+    uint private _state; //1 (for sale); 2 (pending); 3(sold); 
+    string private _image;
     address private _owner;
     address private _buyer;
-    uint private _state; //1 (for sale); 2 (pending); 3(sold); 
-    
-    constructor (string memory location,string memory area, uint256 price,address owner) public {
-        _area = area;
+      
+    function setArguments (string memory location,string memory area, uint rooms,uint256 price, string memory image,address owner) public {
         _location = location;
+        _area = area;
+        _rooms = rooms;
         _price = price;
-        _owner = owner;
         _state = 1;
+        _image = image;
+        _owner = owner;
     }
     function transfer(address _from, address _to) public returns(bool) {
         require(_owner == _from);
@@ -22,10 +26,9 @@ contract Home {
         _buyer = address(0);
         return true;
     }
-    function update (string memory area , string memory location , uint256 price) public returns (bool){
+    function update (string memory i , uint256 price) public returns (bool){
         require(_owner == msg.sender);
-        _location = location;
-        _area = area;
+        _image = i;
         _price = price;
         return true;
     }
@@ -47,7 +50,13 @@ contract Home {
     function getBuyer() view public returns(address){
         return _buyer;
     }
-    function setPending() public{
+    function getImage() view public returns(string memory){
+        return _image;
+    }
+    function getRooms() view public returns(uint){
+        return _rooms;
+    }
+    function setInProgress() public{
         _state = 2;
     }
     function setCanceled() public{
