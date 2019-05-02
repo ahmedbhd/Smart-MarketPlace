@@ -32,22 +32,34 @@ contract Proxy{
     function getHousesNbr() public view returns (uint256){
         return _housesNumber;
     }
-    function getPurchasesNbr() public view returns (string memory){
+    function getPurchasesNbr(uint _type) public view returns (string memory){
         string memory _tab;
         string memory _j;
         uint256 _k;
-        for (uint256 _i=1; _i<=_purchasesNumber; _i++) {
-            bool isDeleted = _purchases[_i].deleted;
-            if (!isDeleted){
-                _k=_i;
-                _j = _k.uint2str();
-                _tab=_tab.concat(_j);
-                _tab = _tab.concat( ";");
+        if (_type==0){
+            for (uint256 _i=1; _i<=_purchasesNumber; _i++) {
+                bool isDeleted = _purchases[_i].deleted;
+                if (!isDeleted&& msg.sender==_purchases[_i].purchase.getOwner()){
+                    _k=_i;
+                    _j = _k.uint2str();
+                    _tab=_tab.concat(_j);
+                    _tab = _tab.concat( ";");
+                }
+            }
+        }
+        else {
+            for (uint256 _i=1; _i<=_purchasesNumber; _i++) {
+                bool isDeleted = _purchases[_i].deleted;
+                if (!isDeleted&& msg.sender==_purchases[_i].purchase.getBuyer()){
+                    _k=_i;
+                    _j = _k.uint2str();
+                    _tab=_tab.concat(_j);
+                    _tab = _tab.concat( ";");
+                }
             }
         }
         return (_tab);
     }
-      
     function getHouseAt(uint256 _index) public view returns(string memory, string memory, uint, uint, address, address ){
         string memory _location;
         string memory _area;
@@ -55,14 +67,13 @@ contract Proxy{
         uint256 _state;
         address _owner;
         address _buyer;
-        if (!_houses[_index].deleted){
             _location= _houses[_index].house.getLocation();
             _area=_houses[_index].house.getArea();
             _price=_houses[_index].house.getPrice();
             _state=_houses[_index].house.getState();
             _owner=_houses[_index].house.getOwner();
             _buyer=_houses[_index].house.getBuyer();
-        }
+        
         return (
             _location,
             _area,
@@ -88,13 +99,12 @@ contract Proxy{
         string memory _j;
         uint256 _k;
         for (uint256 _i=1; _i<=_housesNumber; _i++) {
-            if (!_houses[_i].deleted)
-                if (_houses[_i].house.getOwner()==msg.sender){
-                    _k=_i;
-                    _j = _k.uint2str();
-                    _tab=_tab.concat(_j);
-                    _tab = _tab.concat( ";");
-                }
+            if ((_houses[_i].house.getOwner()==msg.sender) && (!_houses[_i].deleted)){
+                _k=_i;
+                _j = _k.uint2str();
+                _tab=_tab.concat(_j);
+                _tab = _tab.concat( ";");
+            }
         }
         return (_tab);
     }
@@ -164,7 +174,7 @@ contract Proxy{
     }
     // the seller confirmes the purchase and notifies back the clearing house
     function setPurchaseAsConfirmed(uint256 _purchaseIndex) public returns (bool){
-        _purchases[_purchaseIndex].purchase.setBuyerConfirmation();
+        _purchases[_purchaseIndex].purchase.setSellerConfirmation();
         uint256 _houseIndex = _purchases[_purchaseIndex].purchase.getHouseIndex();
         _setHouseAsConfirmed(_purchaseIndex,_houseIndex,_houses[_houseIndex].house.getOwner(),_houses[_houseIndex].house.getBuyer(),_houses[_houseIndex].house.getPrice(),_purchases[_purchaseIndex].purchase.getAdvance());
         return (true);
@@ -177,9 +187,12 @@ contract Proxy{
     function setPurchaseAsCanceled(uint256 _houseIndex, uint256 _purchaseIndex) public returns (bool) {
         require(address(0)!=msg.sender);
         _houses[_houseIndex].house.setCanceled();
+        _deletePurchaseAt(_purchaseIndex);
+        return true;
+    }
+    function _deletePurchaseAt(uint256 _purchaseIndex) internal {
         _purchases[_purchaseIndex].deleted = true;
         delete _purchases[_purchaseIndex].purchase;
-        return true;
     }
     // transfer the ownership of the wanted house to the buyer
     function transferHouseFrom(uint256 _index,address _from, address _to) public returns(bool){
@@ -189,9 +202,10 @@ contract Proxy{
         return (_houses[_index].house.transfer(_from,_to));
     }
     // transfer the ownership of the wanted house to the buyer
-    function revertPurchaseOf(uint256 _index) public returns(bool){
+    function revertPurchaseOf(uint256 _purchaseIndex,uint256 _houseIndex) public returns(bool){
         require(address(0)!=msg.sender);
-        _houses[_index].house.revertPurchase();
+        _houses[_houseIndex].house.revertPurchase();
+        _deletePurchaseAt(_purchaseIndex);
         return (true);
     }
     event Wanted (

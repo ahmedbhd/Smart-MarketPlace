@@ -66,7 +66,6 @@ app.post('/getHouseAt', (req, res) => {
 });
 
 app.get('/getHouses', (req, res) => {
-    console.log("getHouses");
     let houses =[]
     let housesNbr = proxyContract.getHousesNbr({from:buyerAccount,gas:3000000 });
     console.log("housesNbr :"+housesNbr)
@@ -89,7 +88,7 @@ app.get('/getHouses', (req, res) => {
                 "image":"h_"+i+".jpg",
                 "owner" : thisHouse[4],
                 "buyer" : thisHouse[5]
-            });
+            })
         }
     }
     res.json(houses);

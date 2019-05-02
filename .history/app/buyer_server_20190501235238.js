@@ -66,7 +66,6 @@ app.post('/getHouseAt', (req, res) => {
 });
 
 app.get('/getHouses', (req, res) => {
-    console.log("getHouses");
     let houses =[]
     let housesNbr = proxyContract.getHousesNbr({from:buyerAccount,gas:3000000 });
     console.log("housesNbr :"+housesNbr)
@@ -76,7 +75,7 @@ app.get('/getHouses', (req, res) => {
        
         let state = thisHouse[3];
         console.log("state :"+state);
-        if (state !=0){
+        
             let tab = thisHouse[1].split("/");
             let rooms = parseInt(tab[1]);
             houses.push( {
@@ -89,16 +88,18 @@ app.get('/getHouses', (req, res) => {
                 "image":"h_"+i+".jpg",
                 "owner" : thisHouse[4],
                 "buyer" : thisHouse[5]
-            });
-        }
+            })
+        
     }
     res.json(houses);
 });
 
 
 app.post('/setWanted', (req, res) => {
-    
-    console.log("index :"+req.body.houseIndex);
+    let myBalance = tokenContract.balanceOf(buyerAccount,{from: buyerAccount, gas:3000000 });
+    let balance = parseInt(myBalance);
+    let price = parseInt(req.body.housePrice);
+    console.log("index :"+req.body.houseIndex+" balance :"+myBalance+" price :"+price);
 
         proxyContract.setHouseAsWanted(req.body.houseIndex,{from:buyerAccount,gas:3000000 }, function (error, result) {
             if (!error){
@@ -135,12 +136,12 @@ app.post('/getMyPendingPurchaseAt', (req, res) => {
                         "bank": thisPurchase.getBank({from:buyerAccount,gas:3000000 }),
                         "insurance": thisPurchase.getInsurance({from:buyerAccount,gas:3000000 }),
                         "houseIndex":thisPurchase.getHouseIndex({from:buyerAccount,gas:3000000 }),
-                        "loan" : thisPurchase.getLoan({from:buyerAccount,gas:3000000 }),
+                        "loan" : purthisPurchasechase.getLoan({from:buyerAccount,gas:3000000 }),
                         "date" :thisPurchase.getDate({from:buyerAccount,gas:3000000 }),
                         "advance": thisPurchase.getAdvance({from:buyerAccount,gas:3000000 }),
                         "amountPerMonthForBank":thisPurchase.getAmountForBank({from:buyerAccount,gas:3000000 }),
                         "amountPerMonthForInsurance" : thisPurchase.getAmountForInsurance({from:buyerAccount,gas:3000000 }),
-                        "sellerConfirmation" : thisPurchase.getSellerConfirmation({from:buyerAccount,gas:3000000 }),
+                        "sellerConfirmation" : purthisPurchasechase.getSellerConfirmation({from:buyerAccount,gas:3000000 }),
                         "buyerConfirmation" : buyerConfir
                     };
             }

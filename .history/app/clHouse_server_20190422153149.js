@@ -49,7 +49,7 @@ app.get('/getAccounts', (req, res) => {
 
 app.post('/chargeAcc', (req, res) => {
     console.log("acc: "+req.body.receiver+" amount: "+req.body.amount)
-    res.json(tokenContract.transferFrom(clearingHouseAccount ,req.body.receiver,req.body.amount,{from: clearingHouseAccount, gas:3000000 }));
+    res.json(tokenContract.transferFrom(this.clearingHouseAccount ,req.body.receiver,req.body.amount,{from: clearingHouseAccount, gas:3000000 }));
 });
 
 app.post('/getBalanceOf', (req, res) => {
@@ -263,7 +263,7 @@ function purchaseWithLoan(houseIndex,buyer,price){
     let loan = price * 1.5;
     let insurance = loan/100*0.5;
     let bank = loan-insurance;
-    let advance = Math.round(bank/10);
+    let advance = bank/10;
     let forBank = bank/72;
     let forInsurance = insurance/72;
     console.log("purchase :"+loan+" "+advance+" "+forBank+" "+forInsurance);
@@ -278,7 +278,7 @@ function confirmUpFrontPurchase(owner, buyer, price, houseIndex,purchaseIndex){
         proxyContract.transferHouseFrom(houseIndex,owner,buyer,
             {from:clearingHouseAccount,gas:3000000 }, function (error, result) {
                 if (!error){
-                    tokenContract.transferFrom(buyer,owner,price,{from:clearingHouseAccount,gas:3000000 }, function (error, result) {
+                    tokenContract.transfer(owner,price,{from:buyer,gas:3000000 }, function (error, result) {
                         if (error){
                             proxyContract.revertPurchaseOf(purchaseIndex,houseIndex,{from:buyer,gas:3000000 }, function (error, result) {
                                 if (!error){
@@ -306,18 +306,17 @@ function confirmPurchaseWithLoan(owner, buyer, price, houseIndex,purchaseIndex){
     let buyerBalance = parseInt(currentBuyerBalance);
     let thisPurchaseAddr = proxyContract.getPurchaseAt(purchaseIndex,{from:clearingHouseAccount,
         gas:3000000 });
-    let thisPurchase = purchase;
-    thisPurchase = thisPurchase.at(
+    purchase = purchase.at(
         thisPurchaseAddr /* address */
     );
-    let advanceStr =  thisPurchase.getAdvance({from:clearingHouseAccount,gas:3000000 });
+    let advanceStr =  purchase.getAdvance({from:clearingHouseAccount,gas:3000000 });
     let advance = parseFloat(advanceStr);
-    console.log("advance :"+advance);
+
     if (buyerBalance>=advance){
         proxyContract.transferHouseFrom(houseIndex,owner,buyer,
             {from:clearingHouseAccount,gas:3000000 }, function (error, result) {
                 if (!error){
-                    tokenContract.transferFrom(buyer,bankAccount,advance,{from:clearingHouseAccount,gas:3000000 }, function (error, result) {
+                    tokenContract.transfer(bankAccount,advance,{from:buyer,gas:3000000 }, function (error, result) {
                         if (error){
                             proxyContract.revertPurchaseOf(purchaseIndex,houseIndex,{from:buyer,gas:3000000 }, function (error, result) {
                                 if (!error){
@@ -328,7 +327,7 @@ function confirmPurchaseWithLoan(owner, buyer, price, houseIndex,purchaseIndex){
                             }); 
                         }else {
                             console.log("transfer success");
-                            tokenContract.transferFrom(bankAccount,owner,price,{from:clearingHouseAccount,gas:3000000 });
+                            tokenContract.transfer(owner,price,{from:bankAccount,gas:3000000 });
                         }});
                     console.log("transfer success");
                 }else {

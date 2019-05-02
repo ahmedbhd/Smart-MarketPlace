@@ -115,10 +115,8 @@ app.post('/getHouseAt', (req, res) => {
 });
  */
 app.get('/getMyHouses', (req, res) => {
-    console.log("getMyHouses");
-
     let houses =[]
-    let housesNbr = proxyContract.getMyHouses({from:sellerAccount,gas:30000000 });
+    let housesNbr = proxyContract.getMyHouses({from:sellerAccount,gas:3000000 });
     if (housesNbr!=""){
         housesNbr = housesNbr.slice(0,housesNbr.length-1);
         console.log("housesNbr :"+housesNbr);

@@ -81,7 +81,7 @@ contract ERC20Detailed is IERC20 {
 }
 
 contract STToken is ERC20, ERC20Detailed {
-    uint8 public constant DECIMALS = 18;
+    uint8 public constant DECIMALS = 100;
     uint256 public constant INITIAL_SUPPLY = 100000000000000000 * (10 ** uint256(DECIMALS));
 
     constructor (address _bank) public ERC20Detailed("STToken", "STT", DECIMALS) {

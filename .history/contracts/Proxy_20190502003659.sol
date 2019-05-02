@@ -88,13 +88,12 @@ contract Proxy{
         string memory _j;
         uint256 _k;
         for (uint256 _i=1; _i<=_housesNumber; _i++) {
-            if (!_houses[_i].deleted)
-                if (_houses[_i].house.getOwner()==msg.sender){
-                    _k=_i;
-                    _j = _k.uint2str();
-                    _tab=_tab.concat(_j);
-                    _tab = _tab.concat( ";");
-                }
+            if ((_houses[_i].house.getOwner()==msg.sender) && (_houses[_i].house.getState()==1) && (!_houses[_i].deleted)){
+                _k=_i;
+                _j = _k.uint2str();
+                _tab=_tab.concat(_j);
+                _tab = _tab.concat( ";");
+            }
         }
         return (_tab);
     }
@@ -174,7 +173,7 @@ contract Proxy{
         emit Confirmed(_purchaseIndex,_houseIndex,_owner,_buyer,_price,_advance);
     }
     // the seller confirmes the purchase and notifies back the clearing house
-    function setPurchaseAsCanceled(uint256 _houseIndex, uint256 _purchaseIndex) public returns (bool) {
+    function _setHouseAsCanceled(uint256 _houseIndex, uint256 _purchaseIndex) internal returns (bool) {
         require(address(0)!=msg.sender);
         _houses[_houseIndex].house.setCanceled();
         _purchases[_purchaseIndex].deleted = true;

@@ -263,7 +263,7 @@ function purchaseWithLoan(houseIndex,buyer,price){
     let loan = price * 1.5;
     let insurance = loan/100*0.5;
     let bank = loan-insurance;
-    let advance = Math.round(bank/10);
+    let advance = bank/10;
     let forBank = bank/72;
     let forInsurance = insurance/72;
     console.log("purchase :"+loan+" "+advance+" "+forBank+" "+forInsurance);
@@ -306,11 +306,10 @@ function confirmPurchaseWithLoan(owner, buyer, price, houseIndex,purchaseIndex){
     let buyerBalance = parseInt(currentBuyerBalance);
     let thisPurchaseAddr = proxyContract.getPurchaseAt(purchaseIndex,{from:clearingHouseAccount,
         gas:3000000 });
-    let thisPurchase = purchase;
-    thisPurchase = thisPurchase.at(
+    purchase = purchase.at(
         thisPurchaseAddr /* address */
     );
-    let advanceStr =  thisPurchase.getAdvance({from:clearingHouseAccount,gas:3000000 });
+    let advanceStr =  purchase.getAdvance({from:clearingHouseAccount,gas:3000000 });
     let advance = parseFloat(advanceStr);
     console.log("advance :"+advance);
     if (buyerBalance>=advance){

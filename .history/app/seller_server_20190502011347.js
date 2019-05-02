@@ -115,8 +115,6 @@ app.post('/getHouseAt', (req, res) => {
 });
  */
 app.get('/getMyHouses', (req, res) => {
-    console.log("getMyHouses");
-
     let houses =[]
     let housesNbr = proxyContract.getMyHouses({from:sellerAccount,gas:30000000 });
     if (housesNbr!=""){

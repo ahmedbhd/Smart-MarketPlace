@@ -84,7 +84,7 @@ app.post('/getHouseAt', (req, res) => {
 
 });
 
-/* app.get('/getMyInProgressHouses', (req, res) => {
+app.get('/getMyInProgressHouses', (req, res) => {
     let houses =[]
     let housesNbr = proxyContract.getMyInProgressHouses({from:sellerAccount,gas:3000000 });
     if (housesNbr!=""){
@@ -113,12 +113,10 @@ app.post('/getHouseAt', (req, res) => {
     }
     res.json(houses);
 });
- */
-app.get('/getMyHouses', (req, res) => {
-    console.log("getMyHouses");
 
+app.get('/getMyHouses', (req, res) => {
     let houses =[]
-    let housesNbr = proxyContract.getMyHouses({from:sellerAccount,gas:30000000 });
+    let housesNbr = proxyContract.getMyHouses({from:sellerAccount,gas:3000000 });
     if (housesNbr!=""){
         housesNbr = housesNbr.slice(0,housesNbr.length-1);
         console.log("housesNbr :"+housesNbr);
@@ -158,11 +156,6 @@ app.post('/setCanceled', (req, res) => {
 
 });
 
-app.post('/deleteHouse', (req, res) => {
-    
-    res.json(proxyContract.deleteHouseAt(req.body.houseIndex,{from:sellerAccount,gas:3000000 }));
-
-});
 
 
 

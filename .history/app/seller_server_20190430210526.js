@@ -63,28 +63,7 @@ app.post('/addHouse', (req, res) => {
         );
 });
 
-app.post('/getHouseAt', (req, res) => {
-    console.log("getHouseAt")
-    let thisHouse = proxyContract.getHouseAt(req.body.houseIndex, {from: sellerAccount,
-        gas:3000000 });
-        let tab = thisHouse[1].split("/");
-        let rooms = parseInt(tab[1]);
-        let houseJSON = {
-            "location" : thisHouse[0],
-            "area": tab[0],
-            "rooms":rooms,
-            "price": thisHouse[2],
-            "state": thisHouse[3],
-            "image" : "h_"+req.body.houseIndex+".jpg",
-            "owner" : thisHouse[4],
-            "buyer" : thisHouse[5]
-        }
-        console.log(houseJSON)
-    res.json(houseJSON);
-
-});
-
-/* app.get('/getMyInProgressHouses', (req, res) => {
+app.get('/getMyInProgressHouses', (req, res) => {
     let houses =[]
     let housesNbr = proxyContract.getMyInProgressHouses({from:sellerAccount,gas:3000000 });
     if (housesNbr!=""){
@@ -113,12 +92,10 @@ app.post('/getHouseAt', (req, res) => {
     }
     res.json(houses);
 });
- */
-app.get('/getMyHouses', (req, res) => {
-    console.log("getMyHouses");
 
+app.get('/getMyHouses', (req, res) => {
     let houses =[]
-    let housesNbr = proxyContract.getMyHouses({from:sellerAccount,gas:30000000 });
+    let housesNbr = proxyContract.getMyHouses({from:sellerAccount,gas:3000000 });
     if (housesNbr!=""){
         housesNbr = housesNbr.slice(0,housesNbr.length-1);
         console.log("housesNbr :"+housesNbr);
@@ -158,11 +135,6 @@ app.post('/setCanceled', (req, res) => {
 
 });
 
-app.post('/deleteHouse', (req, res) => {
-    
-    res.json(proxyContract.deleteHouseAt(req.body.houseIndex,{from:sellerAccount,gas:3000000 }));
-
-});
 
 
 
