@@ -153,13 +153,13 @@ app.post('/setConfirmed', (req, res) => {
 });
 
 app.post('/setCanceled', (req, res) => {
-    console.log("setCanceled");
+    
     res.json(proxyContract.setPurchaseAsCanceled(req.body.houseIndex,req.body.purchaseIndex,{from:sellerAccount,gas:3000000 }));
 
 });
 
 app.post('/deleteHouse', (req, res) => {
-    console.log("deleteHouse");
+    
     res.json(proxyContract.deleteHouseAt(req.body.houseIndex,{from:sellerAccount,gas:3000000 }));
 
 });
@@ -179,7 +179,7 @@ app.post('/getMyInProgressPurchaseAt', (req, res) => {
     );
     let owner = localPurchase.getOwner({from:sellerAccount,gas:3000000 });
     let ownerConfir = localPurchase.getSellerConfirmation({from:sellerAccount,gas:3000000 });
-    if ( (owner == sellerAccount) /* && (ownerConfir == false) */){
+    if ( (owner == sellerAccount) && (ownerConfir == false)){
         purchases = {
                 "purchaseIndex": item,
                 "owner" : owner,

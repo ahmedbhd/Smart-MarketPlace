@@ -179,7 +179,7 @@ app.post('/getMyInProgressPurchaseAt', (req, res) => {
     );
     let owner = localPurchase.getOwner({from:sellerAccount,gas:3000000 });
     let ownerConfir = localPurchase.getSellerConfirmation({from:sellerAccount,gas:3000000 });
-    if ( (owner == sellerAccount) /* && (ownerConfir == false) */){
+    if ( (owner == sellerAccount) && (ownerConfir == false)){
         purchases = {
                 "purchaseIndex": item,
                 "owner" : owner,

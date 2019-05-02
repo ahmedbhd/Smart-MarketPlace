@@ -115,7 +115,6 @@ app.post('/setWanted', (req, res) => {
 
 
 app.post('/getMyPendingPurchaseAt', (req, res) => {
-    console.log("getMyPendingPurchaseAt");
     let purchases = null;
     let item = req.body.purchaseIndex;
     console.log(item);
@@ -128,7 +127,7 @@ app.post('/getMyPendingPurchaseAt', (req, res) => {
             );
             let buyer = thisPurchase.getBuyer({from:buyerAccount,gas:3000000 });
             let buyerConfir = thisPurchase.getBuyerConfirmation({from:buyerAccount,gas:3000000 });
-            if ( (buyer == buyerAccount)/* &&  (buyerConfir == false) */ ){
+            if ( (buyer == buyerAccount) && (buyerConfir == false)){
                 purchases = {
                         "indexPurchase": item,
                         "owner" : thisPurchase.getOwner({from:buyerAccount,gas:3000000 }),
@@ -145,7 +144,7 @@ app.post('/getMyPendingPurchaseAt', (req, res) => {
                         "buyerConfirmation" : buyerConfir
                     };
             }
-    console.log(purchases);
+    
     res.json(purchases);
 });
 

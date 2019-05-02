@@ -128,7 +128,7 @@ app.post('/getMyPendingPurchaseAt', (req, res) => {
             );
             let buyer = thisPurchase.getBuyer({from:buyerAccount,gas:3000000 });
             let buyerConfir = thisPurchase.getBuyerConfirmation({from:buyerAccount,gas:3000000 });
-            if ( (buyer == buyerAccount)/* &&  (buyerConfir == false) */ ){
+            if ( (buyer == buyerAccount) && (buyerConfir == false)){
                 purchases = {
                         "indexPurchase": item,
                         "owner" : thisPurchase.getOwner({from:buyerAccount,gas:3000000 }),

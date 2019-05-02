@@ -53,7 +53,7 @@ app.post('/chargeAcc', (req, res) => {
 });
 
 app.post('/exchange', (req, res) => {
-    console.log("exchange");
+    console.log("echange");
     res.json(tokenContract.transferFrom(req.body.sender,clearingHouseAccount,req.body.amount,{from:clearingHouseAccount,gas:3000000 }));
 });
 app.post('/getBalanceOf', (req, res) => {
