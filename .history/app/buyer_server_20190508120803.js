@@ -42,7 +42,7 @@ app.get('/getMyAccount', (req, res) => {
 });
 
 app.get('/getMyBalance', (req, res) => {
-    /* const tx = {
+    const tx = {
         // this could be provider.addresses[0] if it exists
         from: buyerAccount, 
         // target address, this could be a smart contract address
@@ -52,7 +52,7 @@ app.get('/getMyBalance', (req, res) => {
         // optional if you are invoking say a payable function 
         value: buyerAccount,
         // this encodes the ABI of the method and the arguements
-        data: tokenContract.balanceOf(buyerAccount).encodeABI() 
+        data: tokenContract.balanceOf(arg).encodeABI() 
       };
       const signPromise = web3.eth.signTransaction(tx, tx.from);
 
@@ -70,8 +70,8 @@ app.get('/getMyBalance', (req, res) => {
         });
       }).catch((err) => {
         // do something when promise fails
-      }); */
-    res.json(tokenContract.balanceOf(buyerAccount,{from: buyerAccount, gas:3000000 }));
+      });
+    //res.json(tokenContract.balanceOf(buyerAccount,{from: buyerAccount, gas:3000000 }));
 });
 
 app.post('/getHouseAt', (req, res) => {

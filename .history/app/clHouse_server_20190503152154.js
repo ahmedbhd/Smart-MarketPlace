@@ -265,16 +265,11 @@ function purchaseWithLoan(houseIndex,buyer,price){
     let timeStamp = d.getTime();
     
     let loan = price * 1.5;
-    let insurance = (loan/100)*0.5;
+    let insurance = loan/100*0.5;
     let bank = loan-insurance;
     let advance = Math.round(bank/10);
-    let forBank = Math.round( (bank-advance)/72);
-    let forInsurance =  Math.round(insurance/72);
-    
-    if (forBank==0) forBank = 1;
-    if (forInsurance ==0) forInsurance = 1;
-
-    loan = forInsurance * 72 + forBank * 72 + advance;
+    let forBank = bank/72;
+    let forInsurance = insurance/72;
     console.log("purchase :"+loan+" "+advance+" "+forBank+" "+forInsurance);
     proxyContract.addPendingPurchase(houseIndex,buyer,bankAccount,insuranceAccount,loan+"",timeStamp,forBank+"",forInsurance+"",advance+"",
      {from: clearingHouseAccount, gas:3000000 });
@@ -346,7 +341,7 @@ function confirmPurchaseWithLoan(owner, buyer, price, houseIndex,purchaseIndex){
             });
     }else{
         console.log("Not enough balance to pay the advance to the bank!");
-        proxyContract.setPurchaseAsCanceled(houseIndex,purchaseIndex,{from:clearingHouseAccount,gas:3000000 });
+        res.json(proxyContract.setPurchaseAsCanceled(houseIndex,purchaseIndex,{from:clearingHouseAccount,gas:3000000 }));
     }
 
 }

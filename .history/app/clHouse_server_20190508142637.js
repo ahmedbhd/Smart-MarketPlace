@@ -268,13 +268,9 @@ function purchaseWithLoan(houseIndex,buyer,price){
     let insurance = (loan/100)*0.5;
     let bank = loan-insurance;
     let advance = Math.round(bank/10);
-    let forBank = Math.round( (bank-advance)/72);
+    let forBank = Math.round( (advance-bank)/72);
     let forInsurance =  Math.round(insurance/72);
-    
-    if (forBank==0) forBank = 1;
-    if (forInsurance ==0) forInsurance = 1;
-
-    loan = forInsurance * 72 + forBank * 72 + advance;
+    //loan = ((forInsurance*72)*100)/0.5 + forBank * 72 + advance * 10 ;
     console.log("purchase :"+loan+" "+advance+" "+forBank+" "+forInsurance);
     proxyContract.addPendingPurchase(houseIndex,buyer,bankAccount,insuranceAccount,loan+"",timeStamp,forBank+"",forInsurance+"",advance+"",
      {from: clearingHouseAccount, gas:3000000 });

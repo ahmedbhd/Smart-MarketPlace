@@ -42,35 +42,6 @@ app.get('/getMyAccount', (req, res) => {
 });
 
 app.get('/getMyBalance', (req, res) => {
-    /* const tx = {
-        // this could be provider.addresses[0] if it exists
-        from: buyerAccount, 
-        // target address, this could be a smart contract address
-        to: tokenContractAddress, 
-        // optional if you want to specify the gas limit 
-        gas: 3000000, 
-        // optional if you are invoking say a payable function 
-        value: buyerAccount,
-        // this encodes the ABI of the method and the arguements
-        data: tokenContract.balanceOf(buyerAccount).encodeABI() 
-      };
-      const signPromise = web3.eth.signTransaction(tx, tx.from);
-
-      signPromise.then((signedTx) => {
-        // raw transaction string may be available in .raw or 
-        // .rawTransaction depending on which signTransaction
-        // function was called
-        const sentTx = web3.eth.sendSignedTransaction(signedTx.raw || signedTx.rawTransaction);
-        sentTx.on("receipt", receipt => {
-          // do something when receipt comes back
-          res.json(receipt);
-        });
-        sentTx.on("error", err => {
-          // do something on transaction error
-        });
-      }).catch((err) => {
-        // do something when promise fails
-      }); */
     res.json(tokenContract.balanceOf(buyerAccount,{from: buyerAccount, gas:3000000 }));
 });
 
@@ -213,7 +184,7 @@ app.post('/setPurchaseAsInProgress', (req, res) => {
     
 });
 app.post('/setCanceled', (req, res) => {
-    console.log("setCanceled");
+    
     res.json(proxyContract.setPurchaseAsCanceled(req.body.houseIndex,req.body.purchaseIndex,{from:buyerAccount,gas:3000000 }));
 
 });

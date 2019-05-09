@@ -74,13 +74,6 @@ contract Proxy{
     function deleteHouseAt(uint256 _index) public returns(bool){
         delete _houses[_index].house;
         _houses[_index].deleted = true;
-        for (uint256 _i=1; _i<=_purchasesNumber; _i++) {
-            bool isDeleted = _purchases[_i].deleted;
-            if (!isDeleted && _purchases[_i].purchase.getHouseIndex()==_index){
-                _purchases[_i].deleted = true;
-                delete _purchases[_i].purchase;
-            }
-        }
         return (true);
     }
     function getPurchaseAt(uint256 _index) public view returns(Purchase){
@@ -217,23 +210,30 @@ contract Proxy{
         string _loan
     );
 }
+
 library Strings {
 
     function concat(string memory _base, string memory _value) internal pure returns (string memory) {
         bytes memory _baseBytes = bytes(_base);
         bytes memory _valueBytes = bytes(_value);
+
         string memory _tmpValue = new string(_baseBytes.length + _valueBytes.length);
         bytes memory _newValue = bytes(_tmpValue);
+
         uint i;
         uint j;
+
         for(i=0; i<_baseBytes.length; i++) {
             _newValue[j++] = _baseBytes[i];
         }
+
         for(i=0; i<_valueBytes.length; i++) {
             _newValue[j++] = _valueBytes[i++];
         }
+
         return string(_newValue);
     }
+
 }
 library Uints {
     function uint2str(uint256 _i) internal pure returns (string memory _uintAsString) {

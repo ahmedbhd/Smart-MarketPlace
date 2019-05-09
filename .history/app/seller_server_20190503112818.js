@@ -179,8 +179,7 @@ app.post('/getMyInProgressPurchaseAt', (req, res) => {
     );
     let owner = localPurchase.getOwner({from:sellerAccount,gas:3000000 });
     let ownerConfir = localPurchase.getSellerConfirmation({from:sellerAccount,gas:3000000 });
-    let buyerConfir = localPurchase.getBuyerConfirmation({from:sellerAccount,gas:3000000 });
-    if ( (owner == sellerAccount) /*  && (buyerConfir == true) */){
+    if ( (owner == sellerAccount) /* && (ownerConfir == false) */){
         purchases = {
                 "purchaseIndex": item,
                 "owner" : owner,
@@ -194,7 +193,7 @@ app.post('/getMyInProgressPurchaseAt', (req, res) => {
                 "amountPerMonthForBank":localPurchase.getAmountForBank({from:sellerAccount,gas:3000000 }),
                 "amountPerMonthForInsurance" : localPurchase.getAmountForInsurance({from:sellerAccount,gas:3000000 }),
                 "sellerConfirmation" : ownerConfir,
-                "buyerConfirmation" : buyerConfir
+                "buyerConfirmation" : localPurchase.getBuyerConfirmation({from:sellerAccount,gas:3000000 })
             };
     }
     console.log(purchases);

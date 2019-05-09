@@ -42,7 +42,7 @@ app.get('/getMyAccount', (req, res) => {
 });
 
 app.get('/getMyBalance', (req, res) => {
-    /* const tx = {
+    const tx = {
         // this could be provider.addresses[0] if it exists
         from: buyerAccount, 
         // target address, this could be a smart contract address
@@ -70,8 +70,8 @@ app.get('/getMyBalance', (req, res) => {
         });
       }).catch((err) => {
         // do something when promise fails
-      }); */
-    res.json(tokenContract.balanceOf(buyerAccount,{from: buyerAccount, gas:3000000 }));
+      });
+    //res.json(tokenContract.balanceOf(buyerAccount,{from: buyerAccount, gas:3000000 }));
 });
 
 app.post('/getHouseAt', (req, res) => {
