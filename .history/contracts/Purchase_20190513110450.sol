@@ -1,4 +1,5 @@
 pragma solidity >=0.4.22 <= 0.5.7;
+import "./House.sol";
 contract Purchase {
     string private _ref;
     address private _owner;
@@ -69,11 +70,8 @@ contract Purchase {
     function getBuyerConfirmation()public view returns(bool){
         return _buyerConfirmation;
     } */
-    function getAddresses() public view returns(address,address,address,uint256,bool){
-        return(_owner,_bank,_insurance,_date,_sellerConfirmation);
-    }
-    function getStrings() public view returns(string memory,string memory,string memory,bool){
-        return(_ref,_amountPerMonthForBank,_amountPerMonthForInsurance,_buyerConfirmation);
+    function getAddresses() public view returns(address,address,address,address,uint256,bool){
+        return(_owner,_buyer,_bank,_insurance,_date,_sellerConfirmation);
     }
     function setSellerConfirmation()  public{
         _sellerConfirmation=true;

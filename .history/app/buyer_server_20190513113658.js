@@ -83,7 +83,7 @@ app.post('/getHouseAt', (req, res) => {
         let t =thisHouse[0].split("|");
         let houseJSON = {
             "description":t[0],
-            "location" : t[1],
+            "location" : thisHouse[0],
             "area": tab[0],
             "rooms":rooms,
             "price": thisHouse[2],
@@ -114,7 +114,7 @@ app.get('/getHouses', (req, res) => {
             houses.push( {
                 "indexHouse": i,
                 "description":t[0],
-                "location" : t[1],
+                "location" : thisHouse[0],
                 "area": tab[0],
                 "rooms":rooms,
                 "price": thisHouse[2],
@@ -157,32 +157,29 @@ app.post('/getMyPendingPurchaseAt', (req, res) => {
                 gas:3000000 });
             console.log(thisPurchaseAddr)
             let thisPurchase = purchase.at(
-                thisPurchaseAddr[0] /* address */
+                thisPurchaseAddr /* address */
             );
-            let addresses = thisPurchase.getAddresses({from:buyerAccount,gas:3000000 });
-            let strings = thisPurchase.getStrings({from:buyerAccount,gas:3000000 });
-            let houseIndex = thisPurchase.getHouseIndex({from:buyerAccount,gas:3000000 });
-            let loan = thisPurchase.getLoan({from:buyerAccount,gas:3000000 });
+            let addresses = localPurchase.getAddresses({from:buyerAccount,gas:3000000 });
+            let strings = localPurchase.getStrings({from:buyerAccount,gas:3000000 });
+            let houseIndex = localPurchase.getHouseIndex({from:buyerAccount,gas:3000000 });
+            let loan = localPurchase.getLoan({from:buyerAccount,gas:3000000 });
 
-            let buyer = thisPurchase.getBuyer({from:buyerAccount,gas:3000000 });
-            let advance = thisPurchase.getAdvance({from:buyerAccount,gas:3000000 });
-            if (buyer == buyerAccount){
+            if (addresses[1] == buyerAccount){
                 purchases = {
                         "ref":strings[0],
                         "purchaseIndex": item,
                         "owner" : addresses[0],
-                        "buyer":buyer,
-                        "bank": addresses[1],
-                        "insurance": addresses[2],
+                        "buyer":addresses[1],
+                        "bank": addresses[2],
+                        "insurance": addresses[3],
                         "houseIndex":houseIndex,
-                        "houseDesc":thisPurchaseAddr[1],
                         "loan" : loan,
-                        "date" :addresses[3],
-                        "advance": advance,
-                        "amountPerMonthForBank":strings[1],
-                        "amountPerMonthForInsurance" : strings[2],
-                        "sellerConfirmation" : addresses[4],
-                        "buyerConfirmation" : strings[3]
+                        "date" :addresses[4],
+                        "advance": strings[1],
+                        "amountPerMonthForBank":strings[2],
+                        "amountPerMonthForInsurance" : strings[3],
+                        "sellerConfirmation" : addresses[5],
+                        "buyerConfirmation" : strings[4]
                     };
             }
     console.log(purchases);

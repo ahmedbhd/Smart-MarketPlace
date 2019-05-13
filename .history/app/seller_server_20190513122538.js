@@ -151,7 +151,7 @@ app.post('/getMyInProgressPurchaseAt', (req, res) => {
         gas:3000000 });
     let localPurchase = purchase;
     localPurchase = localPurchase.at(
-        thisPurchaseAddr[0]  /* address */
+        thisPurchaseAddr /* address */
     );
     let addresses = localPurchase.getAddresses({from:sellerAccount,gas:3000000 });
     let strings = localPurchase.getStrings({from:sellerAccount,gas:3000000 });
@@ -168,7 +168,6 @@ app.post('/getMyInProgressPurchaseAt', (req, res) => {
                 "bank": addresses[1],
                 "insurance": addresses[2],
                 "houseIndex":houseIndex,
-                "houseDesc":thisPurchaseAddr[1],
                 "loan" : loan,
                 "date" :addresses[3],
                 "advance": advance,

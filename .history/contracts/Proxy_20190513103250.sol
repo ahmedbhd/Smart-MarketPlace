@@ -19,10 +19,12 @@ contract Proxy{
     constructor()public{
         _purchasesNumber=_housesNumber=0;
     }
-    function addHouse(string memory _location,string memory _area, uint256 _price) public returns (bool){
+    function addHouse(string memory _location,string memory _area,string memory _rooms, uint256 _price) public returns (bool){
         _housesNumber++;
         _houses[_housesNumber].house=new House();
-        _houses[_housesNumber].house.setArguments(_location,_area,_price,msg.sender);
+        string memory _a=_area.concat("/");
+        _a = _area.concat(_rooms);
+        _houses[_housesNumber].house.setArguments(_location,_a,_price,msg.sender);
         return true;
     }
     function getHousesNbr() public view returns (uint256){
@@ -78,8 +80,18 @@ contract Proxy{
         }
         return (true);
     }
-    function getPurchaseAt(uint256 _index) public view returns(Purchase,string memory){
-        return (_purchases[_index].purchase,_houses[_purchases[_index].purchase.getHouseIndex()].house.getLocation());
+    function getPurchaseAt(uint256 _index) public view returns(address,address,address,address,uint256,string memory){
+        string memory _strings = _purchases[_index].purchase.getLoan();
+        _strings=_strings.concat(_purchases[_index].purchase.getAdvance());
+        _strings=_strings.concat(_purchases[_index].purchase.getAmountForBank());
+        _strings=_strings.concat(_purchases[_index].purchase.getAmountForInsurance());
+        _strings=_strings.concat(_houses[_purchases[_index].purchase.getHouseIndex()].house.getLocation());
+        return (_purchases[_index].purchase.getOwner(),
+            _purchases[_index].purchase.getBuyer(),
+            _purchases[_index].purchase.getBank(),
+            _purchases[_index].purchase.getInsurance(),
+            _purchases[_index].purchase.getHouseIndex(),
+            _strings);
     }
     function getPurchaseLoanAt(uint256 _index) public view returns(string memory){
         return (_purchases[_index].purchase.getLoan());
@@ -106,7 +118,7 @@ contract Proxy{
         emit Wanted(_index,_houses[_index].house.getOwner(),msg.sender,_houses[_index].house.getPrice());
     }
     // the clearing house creates a purchase contract and notifies the buyer
-    function addPendingPurchase(string memory _ref,uint256 _houseIndex,address _buyer,address _bank,address _insurance,
+    function addPendingPurchase(uint256 _houseIndex,address _buyer,address _bank,address _insurance,
         string memory _loan,uint256 _date,string memory _forBank,string memory _forInsurance,string memory _advance) public returns (bool){
         _purchasesNumber++;
         _purchases[_purchasesNumber].purchase=new Purchase();
@@ -122,7 +134,6 @@ contract Proxy{
              _forInsurance,
              _advance
         );
-        _purchases[_purchasesNumber].purchase.setRef(_ref);
         _setHousePending(_houseIndex,_buyer);
         return true;
     }
@@ -131,7 +142,7 @@ contract Proxy{
         _houses[_index].house.setBuyer(_buyer);
     }
     // the clearing house creates a purchase and notifies the seller
-    function addInProgressPurchase(string memory _ref,uint256 _purchaseIndex,uint256 _houseIndex,address _buyer,
+    function addInProgressPurchase(uint256 _purchaseIndex,uint256 _houseIndex,address _buyer,
         address _bank,address _insurance,string memory _loan,uint256 _date,string memory _forBank,string memory _forInsurance,string memory _advance) public returns (bool){
         if (_purchaseIndex==0){
             _purchasesNumber++;
@@ -148,7 +159,6 @@ contract Proxy{
                  _forInsurance,
                  _advance
             );
-            _purchases[_purchasesNumber].purchase.setRef(_ref);
             _purchases[_purchasesNumber].purchase.setBuyerConfirmation();
         }else{
             _purchases[_purchaseIndex].purchase.setBuyerConfirmation();

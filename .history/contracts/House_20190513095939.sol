@@ -1,4 +1,5 @@
 pragma solidity >=0.4.22 <= 0.5.7;
+
 contract House {
     string public _location;
     string public _area;
@@ -20,11 +21,11 @@ contract House {
         _buyer=address(0);
         return true;
     }
-    /* function update ( uint256 price) public returns (bool){
+    function update ( uint256 price) public returns (bool){
         require(_owner == msg.sender);
         _price = price;
         return true;
-    } */
+    }
     function getPrice() public view returns(uint256){
         return _price;
     }

@@ -49,8 +49,7 @@ app.post('/addHouse', (req, res) => {
     console.log("addhouse");
     console.log("acc "+sellerAccount);
     let location = req.body.description+"|"+req.body.location;
-    let area =  req.body.area+"/"+req.body.rooms;
-    proxyContract.addHouse(location,area, req.body.price,{from:sellerAccount,
+    proxyContract.addHouse(location, req.body.area,req.body.rooms, req.body.price,{from:sellerAccount,
          gas:3000000 }, function(err, result){
             if(!err) {
                 console.log(result);
@@ -74,7 +73,7 @@ app.post('/getHouseAt', (req, res) => {
         let t =thisHouse[0].split("|");
         let houseJSON = {
             "description":t[0],
-            "location" : t[1],
+            "location" : thisHouse[1],
             "area": tab[0],
             "rooms":rooms,
             "price": thisHouse[2],
@@ -151,31 +150,28 @@ app.post('/getMyInProgressPurchaseAt', (req, res) => {
         gas:3000000 });
     let localPurchase = purchase;
     localPurchase = localPurchase.at(
-        thisPurchaseAddr[0]  /* address */
+        thisPurchaseAddr /* address */
     );
     let addresses = localPurchase.getAddresses({from:sellerAccount,gas:3000000 });
     let strings = localPurchase.getStrings({from:sellerAccount,gas:3000000 });
     let houseIndex = localPurchase.getHouseIndex({from:sellerAccount,gas:3000000 });
     let loan = localPurchase.getLoan({from:sellerAccount,gas:3000000 });
-    let buyer = localPurchase.getBuyer({from:sellerAccount,gas:3000000 });
-    let advance = localPurchase.getAdvance({from:sellerAccount,gas:3000000 });
     if (addresses[0] == sellerAccount){
         purchases = {
                 "ref":strings[0],
                 "purchaseIndex": item,
                 "owner" : addresses[0],
-                "buyer":buyer,
-                "bank": addresses[1],
-                "insurance": addresses[2],
+                "buyer":addresses[1],
+                "bank": addresses[2],
+                "insurance": addresses[3],
                 "houseIndex":houseIndex,
-                "houseDesc":thisPurchaseAddr[1],
                 "loan" : loan,
-                "date" :addresses[3],
-                "advance": advance,
-                "amountPerMonthForBank":strings[1],
-                "amountPerMonthForInsurance" : strings[2],
-                "sellerConfirmation" : addresses[4],
-                "buyerConfirmation" : strings[3]
+                "date" :addresses[4],
+                "advance": strings[1],
+                "amountPerMonthForBank":strings[2],
+                "amountPerMonthForInsurance" : strings[3],
+                "sellerConfirmation" : addresses[5],
+                "buyerConfirmation" : strings[4]
             };
     }
     console.log(purchases);

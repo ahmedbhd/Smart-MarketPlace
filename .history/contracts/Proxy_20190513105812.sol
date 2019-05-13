@@ -19,10 +19,12 @@ contract Proxy{
     constructor()public{
         _purchasesNumber=_housesNumber=0;
     }
-    function addHouse(string memory _location,string memory _area, uint256 _price) public returns (bool){
+    function addHouse(string memory _location,string memory _area,string memory _rooms, uint256 _price) public returns (bool){
         _housesNumber++;
         _houses[_housesNumber].house=new House();
-        _houses[_housesNumber].house.setArguments(_location,_area,_price,msg.sender);
+        string memory _a=_area.concat("/");
+        _a = _area.concat(_rooms);
+        _houses[_housesNumber].house.setArguments(_location,_a,_price,msg.sender);
         return true;
     }
     function getHousesNbr() public view returns (uint256){
@@ -78,8 +80,9 @@ contract Proxy{
         }
         return (true);
     }
-    function getPurchaseAt(uint256 _index) public view returns(Purchase,string memory){
-        return (_purchases[_index].purchase,_houses[_purchases[_index].purchase.getHouseIndex()].house.getLocation());
+    function getPurchaseAt(uint256 _index) public view returns(Purchase){
+        //string memory _strings = _houses[_purchases[_index].purchase.getHouseIndex()].house.getLocation();
+        return (_purchases[_index].purchase);
     }
     function getPurchaseLoanAt(uint256 _index) public view returns(string memory){
         return (_purchases[_index].purchase.getLoan());

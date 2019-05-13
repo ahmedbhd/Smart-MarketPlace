@@ -159,13 +159,13 @@ app.post('/getMyPendingPurchaseAt', (req, res) => {
             let thisPurchase = purchase.at(
                 thisPurchaseAddr[0] /* address */
             );
-            let addresses = thisPurchase.getAddresses({from:buyerAccount,gas:3000000 });
-            let strings = thisPurchase.getStrings({from:buyerAccount,gas:3000000 });
-            let houseIndex = thisPurchase.getHouseIndex({from:buyerAccount,gas:3000000 });
-            let loan = thisPurchase.getLoan({from:buyerAccount,gas:3000000 });
+            let addresses = localPurchase.getAddresses({from:buyerAccount,gas:3000000 });
+            let strings = localPurchase.getStrings({from:buyerAccount,gas:3000000 });
+            let houseIndex = localPurchase.getHouseIndex({from:buyerAccount,gas:3000000 });
+            let loan = localPurchase.getLoan({from:buyerAccount,gas:3000000 });
 
-            let buyer = thisPurchase.getBuyer({from:buyerAccount,gas:3000000 });
-            let advance = thisPurchase.getAdvance({from:buyerAccount,gas:3000000 });
+            let buyer = localPurchase.getBuyer({from:buyerAccount,gas:3000000 });
+            let advance = localPurchase.getAdvance({from:buyerAccount,gas:3000000 });
             if (buyer == buyerAccount){
                 purchases = {
                         "ref":strings[0],

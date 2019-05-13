@@ -49,8 +49,7 @@ app.post('/addHouse', (req, res) => {
     console.log("addhouse");
     console.log("acc "+sellerAccount);
     let location = req.body.description+"|"+req.body.location;
-    let area =  req.body.area+"/"+req.body.rooms;
-    proxyContract.addHouse(location,area, req.body.price,{from:sellerAccount,
+    proxyContract.addHouse(location, req.body.area,req.body.rooms, req.body.price,{from:sellerAccount,
          gas:3000000 }, function(err, result){
             if(!err) {
                 console.log(result);
@@ -74,7 +73,7 @@ app.post('/getHouseAt', (req, res) => {
         let t =thisHouse[0].split("|");
         let houseJSON = {
             "description":t[0],
-            "location" : t[1],
+            "location" : thisHouse[1],
             "area": tab[0],
             "rooms":rooms,
             "price": thisHouse[2],
@@ -108,7 +107,7 @@ app.get('/getMyHouses', (req, res) => {
                 houses.push( {
                     "indexHouse": item,
                     "description":tab[0],
-                    "location" : tab[1],
+                    "location" : thisHouse[0],
                     "area": t[0],
                     "rooms":rooms,
                     "price": thisHouse[2],
@@ -151,31 +150,26 @@ app.post('/getMyInProgressPurchaseAt', (req, res) => {
         gas:3000000 });
     let localPurchase = purchase;
     localPurchase = localPurchase.at(
-        thisPurchaseAddr[0]  /* address */
+        thisPurchaseAddr /* address */
     );
-    let addresses = localPurchase.getAddresses({from:sellerAccount,gas:3000000 });
-    let strings = localPurchase.getStrings({from:sellerAccount,gas:3000000 });
-    let houseIndex = localPurchase.getHouseIndex({from:sellerAccount,gas:3000000 });
-    let loan = localPurchase.getLoan({from:sellerAccount,gas:3000000 });
-    let buyer = localPurchase.getBuyer({from:sellerAccount,gas:3000000 });
-    let advance = localPurchase.getAdvance({from:sellerAccount,gas:3000000 });
-    if (addresses[0] == sellerAccount){
+    let owner = localPurchase.getOwner({from:sellerAccount,gas:3000000 });
+    let ownerConfir = localPurchase.getSellerConfirmation({from:sellerAccount,gas:3000000 });
+    let buyerConfir = localPurchase.getBuyerConfirmation({from:sellerAccount,gas:3000000 });
+    if ( (owner == sellerAccount) /*  && (buyerConfir == true) */){
         purchases = {
-                "ref":strings[0],
                 "purchaseIndex": item,
-                "owner" : addresses[0],
-                "buyer":buyer,
-                "bank": addresses[1],
-                "insurance": addresses[2],
-                "houseIndex":houseIndex,
-                "houseDesc":thisPurchaseAddr[1],
-                "loan" : loan,
-                "date" :addresses[3],
-                "advance": advance,
-                "amountPerMonthForBank":strings[1],
-                "amountPerMonthForInsurance" : strings[2],
-                "sellerConfirmation" : addresses[4],
-                "buyerConfirmation" : strings[3]
+                "owner" : owner,
+                "buyer":localPurchase.getBuyer({from:sellerAccount,gas:3000000 }),
+                "bank": localPurchase.getBank({from:sellerAccount,gas:3000000 }),
+                "insurance": localPurchase.getInsurance({from:sellerAccount,gas:3000000 }),
+                "houseIndex":localPurchase.getHouseIndex({from:sellerAccount,gas:3000000 }),
+                "loan" : localPurchase.getLoan({from:sellerAccount,gas:3000000 }),
+                "date" :localPurchase.getDate({from:sellerAccount,gas:3000000 }),
+                "advance": localPurchase.getAdvance({from:sellerAccount,gas:3000000 }),
+                "amountPerMonthForBank":localPurchase.getAmountForBank({from:sellerAccount,gas:3000000 }),
+                "amountPerMonthForInsurance" : localPurchase.getAmountForInsurance({from:sellerAccount,gas:3000000 }),
+                "sellerConfirmation" : ownerConfir,
+                "buyerConfirmation" : buyerConfir
             };
     }
     console.log(purchases);

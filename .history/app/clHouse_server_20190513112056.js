@@ -276,7 +276,7 @@ function purchaseWithLoan(houseIndex,buyer,price){
 
     loan = forInsurance * 72 + forBank * 72 + advance;
     console.log("purchase :"+loan+" "+advance+" "+forBank+" "+forInsurance);
-    proxyContract.addPendingPurchase(timeStamp,houseIndex,buyer,bankAccount,insuranceAccount,loan+"",timeStamp,forBank+"",forInsurance+"",advance+"",
+    proxyContract.addPendingPurchase(houseIndex,buyer,bankAccount,insuranceAccount,loan+"",timeStamp,forBank+"",forInsurance+"",advance+"",
      {from: clearingHouseAccount, gas:3000000 });
 }
 
