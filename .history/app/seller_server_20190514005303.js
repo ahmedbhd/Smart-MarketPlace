@@ -162,21 +162,21 @@ app.post('/getMyInProgressPurchaseAt', (req, res) => {
     let desc = thisPurchaseAddr[1].split("|");
     if (addresses[0] == sellerAccount){
         purchases = {
-            "ref":strings[0],
-            "purchaseIndex": item,
-            "owner" : addresses[0],
-            "buyer":buyer,
-            "bank": addresses[1],
-            "insurance": addresses[2],
-            "houseIndex":houseIndex,
-            "houseDesc":desc[0],
-            "loan" : loan,
-            "date" :strings[3],
-            "advance": advance,
-            "amountPerMonthForBank":strings[1],
-            "amountPerMonthForInsurance" : strings[2],
-            "sellerConfirmation" : strings[4],
-            "buyerConfirmation" : strings[5]
+                "ref":strings[0],
+                "purchaseIndex": item,
+                "owner" : addresses[0],
+                "buyer":buyer,
+                "bank": addresses[1],
+                "insurance": addresses[2],
+                "houseIndex":houseIndex,
+                "houseDesc":desc[0],
+                "loan" : loan,
+                "date" :addresses[3],
+                "advance": advance,
+                "amountPerMonthForBank":strings[1],
+                "amountPerMonthForInsurance" : strings[2],
+                "sellerConfirmation" : addresses[4],
+                "buyerConfirmation" : strings[3]
             };
     }
     console.log(purchases);

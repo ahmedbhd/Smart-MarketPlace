@@ -166,8 +166,6 @@ app.post('/getMyPendingPurchaseAt', (req, res) => {
 
             let buyer = thisPurchase.getBuyer({from:buyerAccount,gas:3000000 });
             let advance = thisPurchase.getAdvance({from:buyerAccount,gas:3000000 });
-            let desc = thisPurchaseAddr[1].split("|");
-
             if (buyer == buyerAccount){
                 purchases = {
                         "ref":strings[0],
@@ -177,14 +175,14 @@ app.post('/getMyPendingPurchaseAt', (req, res) => {
                         "bank": addresses[1],
                         "insurance": addresses[2],
                         "houseIndex":houseIndex,
-                        "houseDesc":desc[0],
+                        "houseDesc":thisPurchaseAddr[1],
                         "loan" : loan,
-                        "date" :strings[3],
+                        "date" :addresses[3],
                         "advance": advance,
                         "amountPerMonthForBank":strings[1],
                         "amountPerMonthForInsurance" : strings[2],
-                        "sellerConfirmation" : strings[4],
-                        "buyerConfirmation" : strings[5]
+                        "sellerConfirmation" : addresses[4],
+                        "buyerConfirmation" : strings[3]
                     };
             }
     console.log(purchases);
@@ -233,13 +231,11 @@ app.get('/getMyPendingPurchaseList', (req, res) => {
             );
             let buyer = localPurchase.getBuyer({from:buyerAccount,gas:3000000 });
             let strings = localPurchase.getStrings({from:buyerAccount,gas:3000000 });
-            let desc = thisPurchaseAddr[1].split("|");
-
             if (buyer== buyerAccount){
                 purchases.push({
                         "ref":strings[0],
                         "purchaseIndex": item,
-                        "houseDesc":desc[0],
+                        "houseDesc":thisPurchaseAddr[1],
                         "date" :strings[3],
                         "amountPerMonthForBank":strings[1],
                         "amountPerMonthForInsurance" : strings[2],

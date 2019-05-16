@@ -179,12 +179,12 @@ app.post('/getMyPendingPurchaseAt', (req, res) => {
                         "houseIndex":houseIndex,
                         "houseDesc":desc[0],
                         "loan" : loan,
-                        "date" :strings[3],
+                        "date" :addresses[3],
                         "advance": advance,
                         "amountPerMonthForBank":strings[1],
                         "amountPerMonthForInsurance" : strings[2],
-                        "sellerConfirmation" : strings[4],
-                        "buyerConfirmation" : strings[5]
+                        "sellerConfirmation" : addresses[4],
+                        "buyerConfirmation" : strings[3]
                     };
             }
     console.log(purchases);

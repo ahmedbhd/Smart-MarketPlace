@@ -69,11 +69,11 @@ contract Purchase {
     function getBuyerConfirmation()public view returns(bool){
         return _buyerConfirmation;
     } */
-    function getAddresses() public view returns(address,address,address){
-        return(_owner,_bank,_insurance);
+    function getAddresses() public view returns(address,address,address,uint256){
+        return(_owner,_bank,_insurance,_date);
     }
-    function getStrings() public view returns(string memory,string memory,string memory,uint256,bool,bool){
-        return(_ref,_amountPerMonthForBank,_amountPerMonthForInsurance,_date,_sellerConfirmation,_buyerConfirmation);
+    function getStrings() public view returns(string memory,string memory,string memory,bool,bool){
+        return(_ref,_amountPerMonthForBank,_amountPerMonthForInsurance,_sellerConfirmation,_buyerConfirmation);
     }
     function setSellerConfirmation()  public{
         _sellerConfirmation=true;

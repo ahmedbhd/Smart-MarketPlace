@@ -159,24 +159,23 @@ app.post('/getMyInProgressPurchaseAt', (req, res) => {
     let loan = localPurchase.getLoan({from:sellerAccount,gas:3000000 });
     let buyer = localPurchase.getBuyer({from:sellerAccount,gas:3000000 });
     let advance = localPurchase.getAdvance({from:sellerAccount,gas:3000000 });
-    let desc = thisPurchaseAddr[1].split("|");
     if (addresses[0] == sellerAccount){
         purchases = {
-            "ref":strings[0],
-            "purchaseIndex": item,
-            "owner" : addresses[0],
-            "buyer":buyer,
-            "bank": addresses[1],
-            "insurance": addresses[2],
-            "houseIndex":houseIndex,
-            "houseDesc":desc[0],
-            "loan" : loan,
-            "date" :strings[3],
-            "advance": advance,
-            "amountPerMonthForBank":strings[1],
-            "amountPerMonthForInsurance" : strings[2],
-            "sellerConfirmation" : strings[4],
-            "buyerConfirmation" : strings[5]
+                "ref":strings[0],
+                "purchaseIndex": item,
+                "owner" : addresses[0],
+                "buyer":buyer,
+                "bank": addresses[1],
+                "insurance": addresses[2],
+                "houseIndex":houseIndex,
+                "houseDesc":thisPurchaseAddr[1],
+                "loan" : loan,
+                "date" :addresses[3],
+                "advance": advance,
+                "amountPerMonthForBank":strings[1],
+                "amountPerMonthForInsurance" : strings[2],
+                "sellerConfirmation" : addresses[4],
+                "buyerConfirmation" : strings[3]
             };
     }
     console.log(purchases);
@@ -203,7 +202,7 @@ app.get('/getPurchasesNbr',(req,res) => {
     res.json(purchases);
 });
 
-app.get('/getMyInProgressPurchaseList', (req, res) => {
+app.post('/getMyInProgressPurchaseList', (req, res) => {
     console.log("getMyInProgressPurchaseList");
 
     let purchases =[]
@@ -225,18 +224,16 @@ app.get('/getMyInProgressPurchaseList', (req, res) => {
             );
             let addresses = localPurchase.getAddresses({from:sellerAccount,gas:3000000 });
             let strings = localPurchase.getStrings({from:sellerAccount,gas:3000000 });
-            let desc = thisPurchaseAddr[1].split("|");
-
             if (addresses[0] == sellerAccount){
                 purchases.push({
                         "ref":strings[0],
                         "purchaseIndex": item,
-                        "houseDesc":desc[0],
-                        "date" :strings[3],
+                        "houseDesc":thisPurchaseAddr[1],
+                        "date" :addresses[3],
                         "amountPerMonthForBank":strings[1],
                         "amountPerMonthForInsurance" : strings[2],
-                        "sellerConfirmation" : strings[4],
-                        "buyerConfirmation" : strings[5]
+                        "sellerConfirmation" : strings[3],
+                        "buyerConfirmation" : strings[4]
                     });
             }
         })
