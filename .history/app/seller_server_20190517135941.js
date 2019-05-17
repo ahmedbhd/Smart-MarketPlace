@@ -190,8 +190,6 @@ app.post("/deleteHouse", (req, res) => {
   );
 });
 
-
-
 app.post("/getMyInProgressPurchaseAt", (req, res) => {
   console.log("getMyInProgressPurchaseAt");
   let _purchases = null;

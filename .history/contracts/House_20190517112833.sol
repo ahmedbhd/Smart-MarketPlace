@@ -1,13 +1,13 @@
 pragma solidity >=0.4.22 <= 0.5.7;
 contract House {
-    string private _descLocationAreaRooms;
+    string private _descLocationArea;
     string private _history;
     uint256 private _price;
     uint private _state;//0 (not for sale); 1 (for sale); 2 (pending); 3(in progress); 4(sold);
     address private _owner;
     address private _buyer;
     function setArguments (string memory descLocationArea,string memory history,uint256 price,address owner) public {
-        _descLocationAreaRooms=descLocationArea;
+        _descLocationArea=descLocationArea;
         _price=price;
         _state=1;
         _owner=owner;
@@ -23,8 +23,8 @@ contract House {
     function getPrice() public view returns(uint256){
         return _price;
     }
-    function getDescLocationAreaRooms() public view returns(string memory){
-        return _descLocationAreaRooms;
+    function getDescLocationArea() public view returns(string memory){
+        return _descLocationArea;
     }
     function getHistory() public view returns(string memory){
         return _history;

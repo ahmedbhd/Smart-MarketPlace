@@ -37,8 +37,6 @@ app.get("/getMyAccount", (req, res) => {
   res.json(buyerAccount);
 });
 
-
-
 app.get("/getMyBalance", (req, res) => {
   /* const tx = {
         // this could be provider.addresses[0] if it exists
@@ -73,8 +71,6 @@ app.get("/getMyBalance", (req, res) => {
     tokenContract.balanceOf(buyerAccount, { from: buyerAccount, gas: 3000000 })
   );
 });
-
-
 
 app.post("/getHouseAt", (req, res) => {
   console.log("getHouseAt");
@@ -111,8 +107,6 @@ app.post("/getHouseAt", (req, res) => {
   console.log(_houseJSON);
   res.json(_houseJSON);
 });
-
-
 
 app.get("/getHouses", (req, res) => {
   console.log("getHouses");
@@ -151,8 +145,6 @@ app.get("/getHouses", (req, res) => {
   res.json(_houseJSON);
 });
 
-
-
 app.post("/setWanted", (req, res) => {
   console.log("index :" + req.body.houseIndex);
   let _d = new Date();
@@ -170,8 +162,6 @@ app.post("/setWanted", (req, res) => {
     }
   );
 });
-
-
 
 app.post("/getMyPendingPurchaseAt", (req, res) => {
   console.log("getMyPendingPurchaseAt");
@@ -216,76 +206,72 @@ app.post("/getMyPendingPurchaseAt", (req, res) => {
   res.json(_purchases);
 });
 
-
-
 app.get("/getPurchasesNbr", (req, res) => {
   console.log("getPurchasesNbr");
 
-  let _purchases = [];
-  let _purchasesNbr = proxyContract.getPurchasesNbr({from: buyerAccount,gas: 3000000});
-  console.log("purchasesNbr :" + _purchasesNbr);
-  if (_purchasesNbr != "") {
-    _purchasesNbr = _purchasesNbr.slice(0, _purchasesNbr.length - 1);
-    console.log("purchasesNbr :" + _purchasesNbr);
+  let purchases = [];
+  let purchasesNbr = proxyContract.getPurchasesNbr({from: buyerAccount,gas: 3000000});
+  console.log("purchasesNbr :" + purchasesNbr);
+  if (purchasesNbr != "") {
+    purchasesNbr = purchasesNbr.slice(0, purchasesNbr.length - 1);
+    console.log("purchasesNbr :" + purchasesNbr);
 
-    let _tab = _purchasesNbr.split(";");
-    _tab.forEach(function(_item) {
-      console.log("purchaseNbr :" + _item);
-      _purchases.push(_item);
+    let tab = purchasesNbr.split(";");
+    tab.forEach(function(item) {
+      console.log("purchaseNbr :" + item);
+      purchases.push(item);
     });
   }
-  console.log(_purchases);
-  res.json(_purchases);
+  console.log(purchases);
+  res.json(purchases);
 });
-
-
 
 app.get("/getMyPendingPurchaseList", (req, res) => {
   console.log("getMyPendingPurchaseList");
 
-  let _purchases = [];
-  let _purchasesNbr = proxyContract.getPurchasesNbr({from: buyerAccount,gas: 3000000});
-  console.log("purchasesNbr :" + _purchasesNbr);
-  if (_purchasesNbr != "") {
-    _purchasesNbr = _purchasesNbr.slice(0, _purchasesNbr.length - 1);
-    console.log("purchasesNbr :" + _purchasesNbr);
+  let purchases = [];
+  let purchasesNbr = proxyContract.getPurchasesNbr({from: buyerAccount,gas: 3000000});
+  console.log("purchasesNbr :" + purchasesNbr);
+  if (purchasesNbr != "") {
+    purchasesNbr = purchasesNbr.slice(0, purchasesNbr.length - 1);
+    console.log("purchasesNbr :" + purchasesNbr);
 
-    let _tab = _purchasesNbr.split(";");
-    _tab.forEach(function(_item) {
-      console.log("purchaseNbr :" + _item);
+    let tab = purchasesNbr.split(";");
+    tab.forEach(function(item) {
+      console.log("purchaseNbr :" + item);
 
-      let _thisPurchaseAddr = proxyContract.getPurchaseAt(_item, {from: buyerAccount,gas: 3000000});
-      let _thisPurchase = purchase;
-      _thisPurchase = _thisPurchase.at(_thisPurchaseAddr[0] /* address */);
+      let thisPurchaseAddr = proxyContract.getPurchaseAt(item, {from: buyerAccount,gas: 3000000});
+      let localPurchase = purchase;
+      localPurchase = localPurchase.at(thisPurchaseAddr[0] /* address */);
+      let buyer = localPurchase.getBuyer({ from: buyerAccount, gas: 3000000 });
+      let strings = localPurchase.getStrings({from: buyerAccount,gas: 3000000});
+      let desc = thisPurchaseAddr[1].split("|");
 
-      let _strings = _thisPurchase.getStrings({ from: buyerAccount, gas: 3000000 });
-      let _houseIndex = _thisPurchase.getHouseIndex({from: buyerAccount,gas: 3000000});
-      let _buyer = _thisPurchase.getBuyer({ from: buyerAccount, gas: 3000000 });
-
-      let _descLocationAreaRooms = _thisPurchaseAddr[1].split("|");
-
-      if (_buyer == buyerAccount) {
-        _purchases.push({
-          ref: _strings[1],
-          purchaseIndex: _item,
-          houseIndex: _houseIndex,
-          houseDesc: _descLocationAreaRooms[0],
-          date: _strings[1],
-          sellerConfirmation: _strings[2],
-          buyerConfirmation: _strings[3]
+      if (buyer == buyerAccount) {
+        purchases.push({
+          ref: strings[0],
+          purchaseIndex: item,
+          houseDesc: desc[0],
+          date: strings[3],
+          amountPerMonthForBank: strings[1],
+          amountPerMonthForInsurance: strings[2],
+          sellerConfirmation: strings[4],
+          buyerConfirmation: strings[5]
         });
       }
     });
   }
-  console.log(_purchases);
-  res.json(_purchases);
+  console.log(purchases);
+  res.json(purchases);
 });
-
-
 
 app.post("/setPurchaseAsInProgress", (req, res) => {
   console.log("setPurchaseAsInProgress " + req.body.purchaseIndex);
-  proxyContract.setPurchaseAsInProgress(req.body.purchaseIndex,req.body.houseIndex,{from: buyerAccount, gas: 3000000},function(error, result) {
+  proxyContract.setPurchaseAsInProgress(
+    req.body.purchaseIndex,
+    req.body.houseIndex,
+    { from: buyerAccount, gas: 3000000 },
+    function(error, result) {
       if (!error) {
         res.json(result);
       } else {
@@ -297,9 +283,6 @@ app.post("/setPurchaseAsInProgress", (req, res) => {
     }
   );
 });
-
-
-
 app.post("/setCanceled", (req, res) => {
   console.log("setCanceled");
   let _d = new Date();
@@ -310,8 +293,6 @@ app.post("/setCanceled", (req, res) => {
     proxyContract.setPurchaseAsCanceled(req.body.houseIndex,req.body.purchaseIndex,_history,{from: buyerAccount, gas: 3000000})
   );
 });
-
-
 
 var server = app.listen(port, () => {
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)

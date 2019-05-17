@@ -34,8 +34,8 @@ contract Purchase {
     function setBuyerConfirmation() public {
         _buyerConfirmation=true;
     }
-    function getAddresses() public view returns(address,address,address,address){
-        return(_owner,_bank,_insurance,_buyer);
+    function getAddresses() public view returns(address,address,address){
+        return(_owner,_bank,_insurance);
     }
     function getStrings() public view returns(string memory,uint256,bool,bool){
         return(_loanAdvanceMonthlyBankMonthlyInsurance,_date,_sellerConfirmation,_buyerConfirmation);

@@ -78,11 +78,8 @@ contract Proxy{
         }
         return (true);
     }
-    function getPurchaseAt(uint256 _index) public view returns(Purchase,string memory,string memory){
-        return (_purchases[_index].purchase,
-            _houses[_purchases[_index].purchase.getHouseIndex()].house.getDescLocationAreaRooms(),
-            _houses[_purchases[_index].purchase.getHouseIndex()].house.getHistory()
-        );
+    function getPurchaseAt(uint256 _index) public view returns(Purchase,string memory){
+        return (_purchases[_index].purchase,_houses[_purchases[_index].purchase.getHouseIndex()].house.getDescLocationAreaRooms());
     }
     function getMyHouses() public view returns (string memory){
         require(msg.sender!=address(0));

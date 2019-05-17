@@ -46,11 +46,10 @@ app.use(bodyParser.json());
 app.use("/", express.static("public_static"));
 app.use(cors());
 
-
-
 app.get("/getAccounts", (req, res) => {
   res.json(accounts);
 });
+
 app.post("/chargeAcc", (req, res) => {
   console.log("acc: " + req.body.receiver + " amount: " + req.body.amount);
   res.json(
@@ -62,6 +61,7 @@ app.post("/chargeAcc", (req, res) => {
     )
   );
 });
+
 app.post("/exchange", (req, res) => {
   console.log("exchange");
   res.json(
@@ -82,10 +82,6 @@ app.post("/getBalanceOf", (req, res) => {
     })
   );
 });
-
-
-
-
 
 app.get("/getHouseAt", (req, res) => {
   let thisHouse = proxyContract.getHouseAt(req.body.houseIndex, {
@@ -170,8 +166,6 @@ app.get("/getPurchases", (req, res) => {
   res.json(purchases);
 });
 
-
-
 var server = app.listen(port, () => {
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
 
@@ -187,12 +181,17 @@ var server = app.listen(port, () => {
   deploySCToken();
 });
 
-
-
 function deploySCProxy() {
   console.log("Contract Proxy deployment...");
   MyContractDeployment = ProxySC;
-  proxyContract = MyContractDeployment.new(clearingHouseAccount,{from: clearingHouseAccount,data: ProxyBytecode,gas: 70000000},function(err, MyContractDeployment) {
+  proxyContract = MyContractDeployment.new(
+    clearingHouseAccount,
+    {
+      from: clearingHouseAccount,
+      data: ProxyBytecode,
+      gas: 70000000
+    },
+    function(err, MyContractDeployment) {
       if (!err) {
         // NOTE: The callback will fire twice!
         // Once the contract has the transactionHash property set and once its deployed on an address.
@@ -224,12 +223,17 @@ function deploySCProxy() {
   );
 }
 
-
-
 function deploySCToken() {
   console.log("Contract Token deployment...");
   let MyContractDeployment = STTokenSC;
-  tokenContract = MyContractDeployment.new(bankAccount,{from: clearingHouseAccount,data: STTokenBytecode,gas: 5000000},function(err, MyContractDeployment) {
+  tokenContract = MyContractDeployment.new(
+    bankAccount,
+    {
+      from: clearingHouseAccount,
+      data: STTokenBytecode,
+      gas: 5000000
+    },
+    function(err, MyContractDeployment) {
       if (!err) {
         if (!MyContractDeployment.address) {
           console.log(
@@ -252,8 +256,6 @@ function deploySCToken() {
   /*  sendseller = web3.eth.sendTransaction({from:clearingHouseAccount,to:accounts[1], value:web3.toWei("3", "ether")});
     sendbuyer = web3.eth.sendTransaction({from:clearingHouseAccount,to:accounts[2], value:web3.toWei("3", "ether")}); */
 }
-
-
 
 function initiateEvents() {
   //----------------------------- watching for events from contracts--------------------------
@@ -281,8 +283,6 @@ function initiateEvents() {
     }
   });
 
-
-
   confirmedEvent.watch(function(error, result) {
     if (!error) {
       console.log("house _price :" + result.args._price);
@@ -309,8 +309,6 @@ function initiateEvents() {
   });
 }
 
-
-
 function upFrontPurchase(houseIndex, buyer) {
   let _d = new Date();
   let _timeStamp = _d.getTime();
@@ -321,8 +319,6 @@ function upFrontPurchase(houseIndex, buyer) {
    { from: clearingHouseAccount, gas: 3000000 }
   );
 }
-
-
 
 function purchaseWithLoan(houseIndex, buyer, price) {
   let _d = new Date();
@@ -347,8 +343,6 @@ function purchaseWithLoan(houseIndex, buyer, price) {
     {from: clearingHouseAccount, gas: 3000000}
   );
 }
-
-
 
 function confirmUpFrontPurchase(owner,buyer,price,houseIndex,purchaseIndex,history) {
   let _currentBuyerBalance = tokenContract.balanceOf(buyer,{from: clearingHouseAccount,gas: 3000000});
@@ -386,17 +380,14 @@ function confirmUpFrontPurchase(owner,buyer,price,houseIndex,purchaseIndex,histo
   }
 }
 
-
-
 function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,history) {
   let _currentBuyerBalance = tokenContract.balanceOf(buyer, {from: clearingHouseAccount,gas: 3000000});
   let _buyerBalance = parseInt(_currentBuyerBalance);
   let _thisPurchaseAddr = proxyContract.getPurchaseAt(purchaseIndex,{from: clearingHouseAccount,gas: 3000000});
   let _thisPurchase = purchase;
   _thisPurchase = _thisPurchase.at(_thisPurchaseAddr[0] /* address */);
-  let _loanAdvanceMonthlyBankMonthlyInsurance = _thisPurchase.getLoanAdvanceMonthlyBankMonthlyInsurance({from: clearingHouseAccount,gas: 3000000});
-  let _infosTab = _loanAdvanceMonthlyBankMonthlyInsurance.split("|");
-  let _advance = parseFloat(_infosTab[1]);
+  let _advanceStr = _thisPurchase.getAdvance({from: clearingHouseAccount,gas: 3000000});
+  let _advance = parseFloat(_advanceStr);
   console.log("advance :" + _advance);
   if (_buyerBalance >= _advance) {
     let _d = new Date();

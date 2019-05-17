@@ -78,11 +78,11 @@ contract Proxy{
         }
         return (true);
     }
-    function getPurchaseAt(uint256 _index) public view returns(Purchase,string memory,string memory){
-        return (_purchases[_index].purchase,
-            _houses[_purchases[_index].purchase.getHouseIndex()].house.getDescLocationAreaRooms(),
-            _houses[_purchases[_index].purchase.getHouseIndex()].house.getHistory()
-        );
+    function getPurchaseAt(uint256 _index) public view returns(Purchase,string memory){
+        return (_purchases[_index].purchase,_houses[_purchases[_index].purchase.getHouseIndex()].house.getDescLocationAreaRooms());
+    }
+    function getPurchaseLoanAt(uint256 _index) public view returns(string memory){
+        return (_purchases[_index].purchase.getLoanAdvanceMonthlyBankMonthlyInsurance());
     }
     function getMyHouses() public view returns (string memory){
         require(msg.sender!=address(0));
@@ -101,9 +101,8 @@ contract Proxy{
         return (_tab);
     }
     // the buyer invokes this function to initiate a purchase and notifies the clearing house
-    function setHouseAsWanted (uint256 _index,string memory _history) public {
+    function setHouseAsWanted (uint256 _index) public {
         require(address(0)!=msg.sender);
-        _houses[_index].house.setHistory(_history);
         emit Wanted(_index,_houses[_index].house.getOwner(),msg.sender,_houses[_index].house.getPrice());
     }
     // the clearing house creates a purchase contract and notifies the buyer
@@ -161,34 +160,37 @@ contract Proxy{
         return true;
     }
     // the seller confirmes the purchase and notifies back the clearing house
-    function setPurchaseAsConfirmed(uint256 _purchaseIndex,uint256 _houseIndex) public{
-        require(address(0)!=msg.sender);
+    function setPurchaseAsConfirmed(uint256 _purchaseIndex,uint256 _houseIndex) public returns (bool){
         _purchases[_purchaseIndex].purchase.setSellerConfirmation();
-        emit Confirmed(_purchaseIndex,_houseIndex,_houses[_houseIndex].house.getOwner(),
+        _setHouseAsConfirmed(_purchaseIndex,_houseIndex,_houses[_houseIndex].house.getOwner(),
             _houses[_houseIndex].house.getBuyer(),_houses[_houseIndex].house.getPrice(),
-            _purchases[_purchaseIndex].purchase.getLoanAdvanceMonthlyBankMonthlyInsurance(),_houses[_houseIndex].house.getHistory());
+            _purchases[_purchaseIndex].purchase.getLoanAdvanceMonthlyBankMonthlyInsurance());
+        return (true);
     }
-    function setPurchaseAsCanceled(uint256 _houseIndex, uint256 _purchaseIndex, string memory _history) public returns (bool) {
+    function _setHouseAsConfirmed(uint256 _purchaseIndex,uint256 _houseIndex,
+            address _owner,address _buyer,uint256 _price,string memory _payments)internal{
+        require(address(0)!=msg.sender);
+        emit Confirmed(_purchaseIndex,_houseIndex,_owner,_buyer,_price,_payments);
+    }
+    // the seller confirmes the purchase and notifies back the clearing house
+    function setPurchaseAsCanceled(uint256 _houseIndex, uint256 _purchaseIndex) public returns (bool) {
         require(address(0)!=msg.sender);
         _houses[_houseIndex].house.setCanceled();
-        _houses[_houseIndex].house.setHistory(_history);
         _purchases[_purchaseIndex].deleted=true;
         delete _purchases[_purchaseIndex].purchase;
         return true;
     }
     // transfer the ownership of the wanted house to the buyer
-    function transferHouseFrom(uint256 _index,address _from,address _to,string memory _history) public returns(bool){
+    function transferHouseFrom(uint256 _index,address _from,address _to) public returns(bool){
         require(address(0)!=msg.sender);
         require(address(0)!=_to);
         require(_index<=_housesNumber);
-        _houses[_index].house.setHistory(_history);
         return (_houses[_index].house.transfer(_from,_to));
     }
     // transfer the ownership of the wanted house to the buyer
-    function revertPurchaseOf(uint256 _index,string memory _history) public returns(bool){
+    function revertPurchaseOf(uint256 _index) public returns(bool){
         require(address(0)!=msg.sender);
         _houses[_index].house.revertPurchase();
-        _houses[_index].house.setHistory(_history);
         return (true);
     }
     event Wanted (
@@ -206,8 +208,7 @@ contract Proxy{
         address _owner,
         address _buyer,
         uint256 _price,
-        string _loanAdvanceMonthlyBankMonthlyInsurance,
-        string _history
+        string _payments
     );
 }
 library Strings {

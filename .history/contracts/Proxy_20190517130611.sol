@@ -78,11 +78,8 @@ contract Proxy{
         }
         return (true);
     }
-    function getPurchaseAt(uint256 _index) public view returns(Purchase,string memory,string memory){
-        return (_purchases[_index].purchase,
-            _houses[_purchases[_index].purchase.getHouseIndex()].house.getDescLocationAreaRooms(),
-            _houses[_purchases[_index].purchase.getHouseIndex()].house.getHistory()
-        );
+    function getPurchaseAt(uint256 _index) public view returns(Purchase,string memory){
+        return (_purchases[_index].purchase,_houses[_purchases[_index].purchase.getHouseIndex()].house.getDescLocationAreaRooms());
     }
     function getMyHouses() public view returns (string memory){
         require(msg.sender!=address(0));
@@ -185,10 +182,9 @@ contract Proxy{
         return (_houses[_index].house.transfer(_from,_to));
     }
     // transfer the ownership of the wanted house to the buyer
-    function revertPurchaseOf(uint256 _index,string memory _history) public returns(bool){
+    function revertPurchaseOf(uint256 _index) public returns(bool){
         require(address(0)!=msg.sender);
         _houses[_index].house.revertPurchase();
-        _houses[_index].house.setHistory(_history);
         return (true);
     }
     event Wanted (

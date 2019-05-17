@@ -37,8 +37,6 @@ app.get("/getMyAccount", (req, res) => {
   res.json(buyerAccount);
 });
 
-
-
 app.get("/getMyBalance", (req, res) => {
   /* const tx = {
         // this could be provider.addresses[0] if it exists
@@ -73,8 +71,6 @@ app.get("/getMyBalance", (req, res) => {
     tokenContract.balanceOf(buyerAccount, { from: buyerAccount, gas: 3000000 })
   );
 });
-
-
 
 app.post("/getHouseAt", (req, res) => {
   console.log("getHouseAt");
@@ -111,8 +107,6 @@ app.post("/getHouseAt", (req, res) => {
   console.log(_houseJSON);
   res.json(_houseJSON);
 });
-
-
 
 app.get("/getHouses", (req, res) => {
   console.log("getHouses");
@@ -151,8 +145,6 @@ app.get("/getHouses", (req, res) => {
   res.json(_houseJSON);
 });
 
-
-
 app.post("/setWanted", (req, res) => {
   console.log("index :" + req.body.houseIndex);
   let _d = new Date();
@@ -170,8 +162,6 @@ app.post("/setWanted", (req, res) => {
     }
   );
 });
-
-
 
 app.post("/getMyPendingPurchaseAt", (req, res) => {
   console.log("getMyPendingPurchaseAt");
@@ -265,7 +255,7 @@ app.get("/getMyPendingPurchaseList", (req, res) => {
       let _descLocationAreaRooms = _thisPurchaseAddr[1].split("|");
 
       if (_buyer == buyerAccount) {
-        _purchases.push({
+        _purchases = {
           ref: _strings[1],
           purchaseIndex: _item,
           houseIndex: _houseIndex,
@@ -273,7 +263,7 @@ app.get("/getMyPendingPurchaseList", (req, res) => {
           date: _strings[1],
           sellerConfirmation: _strings[2],
           buyerConfirmation: _strings[3]
-        });
+        };
       }
     });
   }
@@ -281,11 +271,13 @@ app.get("/getMyPendingPurchaseList", (req, res) => {
   res.json(_purchases);
 });
 
-
-
 app.post("/setPurchaseAsInProgress", (req, res) => {
   console.log("setPurchaseAsInProgress " + req.body.purchaseIndex);
-  proxyContract.setPurchaseAsInProgress(req.body.purchaseIndex,req.body.houseIndex,{from: buyerAccount, gas: 3000000},function(error, result) {
+  proxyContract.setPurchaseAsInProgress(
+    req.body.purchaseIndex,
+    req.body.houseIndex,
+    { from: buyerAccount, gas: 3000000 },
+    function(error, result) {
       if (!error) {
         res.json(result);
       } else {
@@ -297,9 +289,6 @@ app.post("/setPurchaseAsInProgress", (req, res) => {
     }
   );
 });
-
-
-
 app.post("/setCanceled", (req, res) => {
   console.log("setCanceled");
   let _d = new Date();
@@ -310,8 +299,6 @@ app.post("/setCanceled", (req, res) => {
     proxyContract.setPurchaseAsCanceled(req.body.houseIndex,req.body.purchaseIndex,_history,{from: buyerAccount, gas: 3000000})
   );
 });
-
-
 
 var server = app.listen(port, () => {
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
