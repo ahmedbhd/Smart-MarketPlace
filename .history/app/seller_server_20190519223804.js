@@ -75,8 +75,8 @@ app.post("/addHouse", (req, res) => {
 
 
 app.post("/getHouseAt", (req, res) => {
-  console.log("getHouseAt "+req.body.indexHouse);
-  let _thisHouse = proxyContract.getHouseAt(req.body.indexHouse,{from: sellerAccount, gas: 3000000});
+  console.log("getHouseAt "+req.body.houseIndex);
+  let _thisHouse = proxyContract.getHouseAt(req.body.houseIndex,{from: sellerAccount, gas: 3000000});
   let _descLocationAreaRoomsReview = _thisHouse[0];
   let _history=_thisHouse[1];
   let _price =_thisHouse[2];
@@ -93,7 +93,7 @@ app.post("/getHouseAt", (req, res) => {
   let _review = _tab[4];
 
   let _houseJSON = {
-    indexHouse:req.body.indexHouse,
+    indexHouse:req.body.houseIndex,
     description: _desc,
     location: _loc,
     area: _area,
@@ -101,7 +101,7 @@ app.post("/getHouseAt", (req, res) => {
     history: _history,
     price: _price,
     state: _state,
-    image: "h_" + req.body.indexHouse + ".jpg",
+    image: "h_" + req.body.houseIndex + ".jpg",
     review: _review,
     owner: _owner,
     buyer: _buyer
@@ -165,7 +165,7 @@ app.get("/getMyHouses", (req, res) => {
 app.post("/setConfirmed", (req, res) => {
   console.log("set confirmed " + req.body.purchaseIndex);
   res.json(
-    proxyContract.setPurchaseAsConfirmed(req.body.purchaseIndex,req.body.indexHouse,{ from: sellerAccount, gas: 3000000 })
+    proxyContract.setPurchaseAsConfirmed(req.body.purchaseIndex,req.body.houseIndex,{ from: sellerAccount, gas: 3000000 })
   );
 });
 
@@ -178,7 +178,7 @@ app.post("/setCanceled", (req, res) => {
   let _history = req.body.history;
   _history = _history+sellerAccount+"/"+_timeStamp+"/Cancellation|";
   res.json(
-    proxyContract.setPurchaseAsCanceled(req.body.indexHouse,req.body.purchaseIndex,_history,{from: sellerAccount, gas: 3000000})
+    proxyContract.setPurchaseAsCanceled(req.body.houseIndex,req.body.purchaseIndex,_history,{from: sellerAccount, gas: 3000000})
   );
 });
 
@@ -187,7 +187,7 @@ app.post("/setCanceled", (req, res) => {
 app.post("/deleteHouse", (req, res) => {
   console.log("deleteHouse");
   res.json(
-    proxyContract.deleteHouseAt(req.body.indexHouse,{from: sellerAccount,gas: 3000000})
+    proxyContract.deleteHouseAt(req.body.houseIndex,{from: sellerAccount,gas: 3000000})
   );
 });
 
@@ -220,7 +220,7 @@ app.post("/getMyInProgressPurchaseAt", (req, res) => {
       buyer: _addresses[3],
       bank: _addresses[1],
       insurance: _addresses[2],
-      indexHouse: _houseIndex,
+      houseIndex: _houseIndex,
       houseDesc: _descLocationAreaRoomsReview[0],
       history:_history,
       loan: _paymentsTab[0],
@@ -289,7 +289,7 @@ app.get("/getMyInProgressPurchaseList", (req, res) => {
         _purchases.push({
           ref: _strings[1],
           purchaseIndex: _item,
-          indexHouse: _houseIndex,
+          houseIndex: _houseIndex,
           houseDesc: _descLocationAreaRoomsReview[0],
           date: _strings[1],
           sellerConfirmation: _strings[2],
@@ -315,7 +315,7 @@ app.get("/getMyInProgressPurchaseList", (req, res) => {
 app.post("/sellHouseAt", (req, res) => {
   console.log("sellHouseAt");
   res.json(
-    proxyContract.sellHouseAt(req.body.indexHouse,{from: sellerAccount,gas: 3000000})
+    proxyContract.sellHouseAt(req.body.houseIndex,{from: sellerAccount,gas: 3000000})
   );
 });
 

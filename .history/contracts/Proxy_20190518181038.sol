@@ -33,12 +33,12 @@ contract Proxy{
         string memory _j;
         uint256 _k;
         for(uint256 _i=1;_i<=_purchasesNumber;_i++){
-            bool isDeleted = _purchases[_i].deleted;
+            bool isDeleted=_purchases[_i].deleted;
             if (!isDeleted){
                 _k=_i;
                 _j=_k.uint2str();
                 _tab=_tab.concat(_j);
-                _tab=_tab.concat(";");
+                _tab=_tab.concat( ";");
             }
         }
         return (_tab);
@@ -68,36 +68,37 @@ contract Proxy{
     }
     function deleteHouseAt(uint256 _index) public returns(bool){
         delete _houses[_index].house;
-        _houses[_index].deleted=true;
-        for(uint256 _i=1;_i<=_purchasesNumber;_i++){
-            bool isDeleted=_purchases[_i].deleted;
-            if (!isDeleted&&_purchases[_i].purchase.getHouseIndex()==_index){
-                _purchases[_i].deleted=true;
+        _houses[_index].deleted = true;
+        for(uint256 _i= 1;_i <=_purchasesNumber;_i++){
+            bool isDeleted = _purchases[_i].deleted;
+            if (!isDeleted && _purchases[_i].purchase.getHouseIndex()==_index){
+                _purchases[_i].deleted = true;
                 delete _purchases[_i].purchase;
             }
         }
         return (true);
     }
-    // function unsellHouseAt(uint256 _index) public returns(bool){
-    //     require(_houses[_index].deleted==false);
-    //     _houses[_index].house.setState(0);
-    //     for(uint256 _i= 1;_i<=_purchasesNumber;_i++){
-    //         bool isDeleted=_purchases[_i].deleted;
-    //         if (!isDeleted&&_purchases[_i].purchase.getHouseIndex()==_index){
-    //             _purchases[_i].deleted=true;
-    //             delete _purchases[_i].purchase;
-    //         }
-    //     }
-    //     return (true);
-    // }
+    function unsellHouseAt(uint256 _index) public returns(bool){
+        _houses[_index].house.setState(0);
+        for(uint256 _i = 1;_i <= _purchasesNumber;_i++){
+            bool isDeleted = _purchases[_i].deleted;
+            if (!isDeleted && _purchases[_i].purchase.getHouseIndex()==_index){
+                _purchases[_i].deleted = true;
+                delete _purchases[_i].purchase;
+            }
+        }
+        return (true);
+    }
     function sellHouseAt(uint256 _index) public returns(bool){
-        require(_houses[_index].deleted==false);
-        _houses[_index].house.setState(1);
+        bool isDeleted = _houses[_index].deleted;
+        if (!isDeleted)
+            _houses[_index].house.setState(1);
         return (true);
     }
     function updateHouseReviewAt(uint256 _index,string memory _infos) public returns(bool){
-        require(_houses[_index].deleted==false);
-        _houses[_index].house.setDescLocationAreaRoomsReview(_infos);
+        bool isDeleted = _houses[_index].deleted;
+        if (!isDeleted)
+            _houses[_index].house.setDescLocationAreaRoomsReview(_infos);
         return (true);
     }
     function getPurchaseAt(uint256 _index) public view returns(Purchase,string memory,string memory){
@@ -130,7 +131,7 @@ contract Proxy{
     function addPendingPurchase(uint256 _houseIndex,address _buyer,address _bank,address _insurance,
             string memory _payments,uint256 _date) public returns (bool){
         _purchasesNumber++;
-        _purchases[_purchasesNumber].purchase=new Purchase();
+        _purchases[_purchasesNumber].purchase = new Purchase();
         _purchases[_purchasesNumber].purchase.setArguments(
              _houses[_houseIndex].house.getOwner(),
              _buyer,
@@ -152,7 +153,7 @@ contract Proxy{
             address _bank,address _insurance,string memory _payments,uint256 _date) public returns (bool){
         if (_purchaseIndex==0){
             _purchasesNumber++;
-            _purchases[_purchasesNumber].purchase=new Purchase();
+            _purchases[_purchasesNumber].purchase = new Purchase();
             _purchases[_purchasesNumber].purchase.setArguments(
                  _houses[_houseIndex].house.getOwner(),
                  _buyer,
@@ -170,7 +171,7 @@ contract Proxy{
         return true;
     }
     function setPurchaseAsInProgress(uint256 _purchaseIndex,uint256 _houseIndex,address _buyer) public returns (bool){
-        require(_buyer==_houses[_houseIndex].house.getBuyer());
+        require(_buyer == _houses[_houseIndex].house.getBuyer());
         _purchases[_purchaseIndex].purchase.setBuyerConfirmation();
         _setHouseInProgress(_houseIndex,_buyer);
         return true;
@@ -190,14 +191,14 @@ contract Proxy{
     function setPurchaseAsCanceled(uint256 _houseIndex, uint256 _purchaseIndex, string memory _history) public returns (bool) {
         _houses[_houseIndex].house.setCanceled();
         _houses[_houseIndex].house.setHistory(_history);
-        _purchases[_purchaseIndex].deleted=true;
+        _purchases[_purchaseIndex].deleted = true;
         delete _purchases[_purchaseIndex].purchase;
         return true;
     }
     // transfer the ownership of the wanted house to the buyer
     function transferHouseFrom(uint256 _index,address _from,address _to,string memory _history) public returns(bool){
-        require(address(0)!=_to);
-        require(_index<=_housesNumber);
+        require(address(0) != _to);
+        require(_index <=_housesNumber);
         _houses[_index].house.setHistory(_history);
         return (_houses[_index].house.transfer(_from,_to));
     }
@@ -228,37 +229,37 @@ contract Proxy{
 }
 library Strings {
     function concat(string memory _base, string memory _value) internal pure returns (string memory) {
-        bytes memory _baseBytes=bytes(_base);
-        bytes memory _valueBytes=bytes(_value);
-        string memory _tmpValue=new string(_baseBytes.length+_valueBytes.length);
-        bytes memory _newValue=bytes(_tmpValue);
+        bytes memory _baseBytes = bytes(_base);
+        bytes memory _valueBytes = bytes(_value);
+        string memory _tmpValue = new string(_baseBytes.length + _valueBytes.length);
+        bytes memory _newValue = bytes(_tmpValue);
         uint i;
         uint j;
-        for(i=0; i<_baseBytes.length;i++) {
-            _newValue[j++]=_baseBytes[i];
+        for(i = 0; i < _baseBytes.length; i++) {
+            _newValue[j++] = _baseBytes[i];
         }
-        for(i=0; i<_valueBytes.length;i++) {
-            _newValue[j++]=_valueBytes[i++];
+        for(i = 0; i < _valueBytes.length; i++) {
+            _newValue[j++] = _valueBytes[i++];
         }
         return string(_newValue);
     }
 }
 library Uints {
     function uint2str(uint256 _i) internal pure returns (string memory _uintAsString){
-        if (_i==0) {
+        if (_i == 0) {
             return "0";
         }
-        uint256 j=_i;
+        uint256 j = _i;
         uint256 len;
-        while (j!=0) {
+        while (j != 0) {
             len++;
-            j/=10;
+            j /= 10;
         }
-        bytes memory bstr=new bytes(len);
-        uint256 k=len-1;
-        while (_i!=0) {
-            bstr[k--]=byte(uint8(48+_i % 10));
-            _i/=10;
+        bytes memory bstr = new bytes(len);
+        uint256 k = len - 1;
+        while (_i != 0) {
+            bstr[k--] = byte(uint8(48 + _i % 10));
+            _i /= 10;
         }
         return string(bstr);
     }

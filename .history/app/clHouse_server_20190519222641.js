@@ -356,12 +356,12 @@ function confirmUpFrontPurchase(owner,buyer,price,houseIndex,purchaseIndex,histo
   if (_buyerBalance >= price) {
     let _d = new Date();
     let _timeStamp = _d.getTime();
-    history = history+buyer+"/"+_timeStamp+"/Buying|";
+    history = history+buyer+"/"+_timeStamp+"/Bought|";
     proxyContract.transferHouseFrom(houseIndex,owner,buyer,history,{ from: clearingHouseAccount, gas: 3000000 },function(error, result) {
         if (!error) {
           tokenContract.transferFrom(buyer,owner,price,{ from: clearingHouseAccount, gas: 3000000 },function(error, result) {
               if (error) {
-                history = history+buyer+"/"+_timeStamp+"/Reverting|";
+                history = history+"|"+buyer+"/"+_timeStamp+"/Reverted";
                 proxyContract.revertPurchaseOf(purchaseIndex,houseIndex,history,{ from: buyer, gas: 3000000 },function(error, result) {
                     if (!error) {
                       console.log("purchase revert done ");
@@ -401,12 +401,12 @@ function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,hist
   if (_buyerBalance >= _advance) {
     let _d = new Date();
     let _timeStamp = _d.getTime();
-    history = history+buyer+"/"+_timeStamp+"/Buying|";
+    history = history+buyer+"/"+_timeStamp+"/Bought|";
     proxyContract.transferHouseFrom(houseIndex,owner,buyer,history,{from:clearingHouseAccount, gas:3000000},function(error, result) {
         if (!error) {
           tokenContract.transferFrom(buyer,bankAccount,_advance,{from: clearingHouseAccount, gas: 3000000},function(error, result) {
               if (error) {
-                history = history+buyer+"/"+_timeStamp+"/Reverting|";
+                history = history+"|"+buyer+"/"+_timeStamp+"/Reverted";
                 proxyContract.revertPurchaseOf(purchaseIndex,houseIndex,history,{from:buyer, gas:3000000},function(error, result) {
                     if (!error) {
                       console.log("purchase revert done ");

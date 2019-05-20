@@ -78,24 +78,25 @@ app.get("/getMyBalance", (req, res) => {
 
 app.post("/getHouseAt", (req, res) => {
   console.log("getHouseAt");
-  let _thisHouse = proxyContract.getHouseAt(req.body.indexHouse, {from: buyerAccount,gas: 3000000});
-  let _descLocationAreaRoomsReview = _thisHouse[0];
+  let _thisHouse = proxyContract.getHouseAt(req.body.houseIndex, {
+    from: sellerAccount,
+    gas: 3000000
+  });
+  let _descLocationAreaRooms = _thisHouse[0];
   let _history=_thisHouse[1];
   let _price =_thisHouse[2];
   let _state = _thisHouse[3];
   let _owner = _thisHouse[4];
   let _buyer =_thisHouse[5];
 
-  let _tab = _descLocationAreaRoomsReview.split("|");
+  let _tab = _descLocationAreaRooms.split("|");
   let _desc = _tab[0]
   let _loc = _tab[1]
   let _area = _tab[2]
   let _rooms = _tab[3]
   _rooms = parseInt(_rooms);
-  let _review = _tab[4];
 
   let _houseJSON = {
-    indexHouse:req.body.indexHouse,
     description: _desc,
     location: _loc,
     area: _area,
@@ -103,11 +104,9 @@ app.post("/getHouseAt", (req, res) => {
     history: _history,
     price: _price,
     state: _state,
-    image: "h_" + req.body.indexHouse + ".jpg",
-    review: _review,
+    image: "h_" + req.body.houseIndex + ".jpg",
     owner: _owner,
-    buyer: _buyer,
-    descLocationAreaRoomsReview:_descLocationAreaRoomsReview
+    buyer: _buyer
   };
   console.log(_houseJSON);
   res.json(_houseJSON);
@@ -120,25 +119,22 @@ app.get("/getHouses", (req, res) => {
   let _houseJSON = [];
   let _housesNbr = proxyContract.getHousesNbr({from: buyerAccount,gas: 3000000});
   console.log("housesNbr :" + _housesNbr);
-  for (var i = 1; i <= _housesNbr; i++) {
-    let _thisHouse = proxyContract.getHouseAt(i,{from:buyerAccount,gas: 3000000});
-    let _descLocationAreaRoomsReview = _thisHouse[0];
+  for (var _i = 1; _i <= _housesNbr; _i++) {
+    let _thisHouse = proxyContract.getHouseAt(_i,{from:buyerAccount,gas: 3000000});
+    let _descLocationAreaRooms = _thisHouse[0];
     let _history=_thisHouse[1];
     let _price =_thisHouse[2];
     let _state = _thisHouse[3];
     let _owner = _thisHouse[4];
     let _buyer =_thisHouse[5];
 
-    let _tab = _descLocationAreaRoomsReview.split("|");
+    let _tab = _descLocationAreaRooms.split("|");
     let _desc = _tab[0]
     let _loc = _tab[1]
     let _area = _tab[2]
     let _rooms = _tab[3]
     _rooms = parseInt(_rooms);
-    let _review = _tab[4];
-
     _houseJSON.push({
-      indexHouse:i,
       description: _desc,
       location: _loc,
       area: _area,
@@ -146,8 +142,7 @@ app.get("/getHouses", (req, res) => {
       history: _history,
       price: _price,
       state: _state,
-      image: "h_" + i + ".jpg",
-      review: _review,
+      image: "h_" + req.body.houseIndex + ".jpg",
       owner: _owner,
       buyer: _buyer
     });
@@ -159,12 +154,11 @@ app.get("/getHouses", (req, res) => {
 
 
 app.post("/setWanted", (req, res) => {
-  console.log("index :" + req.body.indexHouse);
+  console.log("index :" + req.body.houseIndex);
   let _d = new Date();
   let _timeStamp = _d.getTime();
-  let _history = req.body.history+buyerAccount+"/"+_timeStamp+"/Wanting|"
-  proxyContract.setHouseAsWanted(req.body.indexHouse,_history,buyerAccount,{ from: buyerAccount, gas: 3000000 },
-    function(error, result) {
+  let _history = req.body.history+"|"+buyerAccount+"/"+_timeStamp+"/Wanted"
+  proxyContract.setHouseAsWanted(req.body.houseIndex,_history,buyerAccount,{ from: buyerAccount, gas: 3000000 },function(error, result) {
       if (!error) {
         res.json(result);
       } else {
@@ -195,7 +189,7 @@ app.post("/getMyPendingPurchaseAt", (req, res) => {
   let _buyer = _thisPurchase.getBuyer({ from: buyerAccount, gas: 3000000 });
 
   _loanAdvanceMonthlyBankMonthlyInsurance = _strings[0];
-  let _descLocationAreaRoomsReview = _thisPurchaseAddr[1].split("|");
+  let _descLocationAreaRooms = _thisPurchaseAddr[1].split("|");
   let _paymentsTab = _loanAdvanceMonthlyBankMonthlyInsurance.split("|");
 
   if (_buyer == buyerAccount) {
@@ -206,8 +200,8 @@ app.post("/getMyPendingPurchaseAt", (req, res) => {
       buyer: _buyer,
       bank: _addresses[1],
       insurance: _addresses[2],
-      indexHouse: _houseIndex,
-      houseDesc: _descLocationAreaRoomsReview[0],
+      houseIndex: _houseIndex,
+      houseDesc: _descLocationAreaRooms[0],
       history:_history,
       loan: _paymentsTab[0],
       date: _strings[1],
@@ -268,14 +262,14 @@ app.get("/getMyPendingPurchaseList", (req, res) => {
       let _houseIndex = _thisPurchase.getHouseIndex({from: buyerAccount,gas: 3000000});
       let _buyer = _thisPurchase.getBuyer({ from: buyerAccount, gas: 3000000 });
 
-      let _descLocationAreaRoomsReview = _thisPurchaseAddr[1].split("|");
+      let _descLocationAreaRooms = _thisPurchaseAddr[1].split("|");
 
       if (_buyer == buyerAccount) {
         _purchases.push({
           ref: _strings[1],
           purchaseIndex: _item,
-          indexHouse: _houseIndex,
-          houseDesc: _descLocationAreaRoomsReview[0],
+          houseIndex: _houseIndex,
+          houseDesc: _descLocationAreaRooms[0],
           date: _strings[1],
           sellerConfirmation: _strings[2],
           buyerConfirmation: _strings[3]
@@ -291,8 +285,7 @@ app.get("/getMyPendingPurchaseList", (req, res) => {
 
 app.post("/setPurchaseAsInProgress", (req, res) => {
   console.log("setPurchaseAsInProgress " + req.body.purchaseIndex);
-  proxyContract.setPurchaseAsInProgress(req.body.purchaseIndex,req.body.indexHouse,buyerAccount,
-    {from: buyerAccount, gas: 3000000},function(error, result) {
+  proxyContract.setPurchaseAsInProgress(req.body.purchaseIndex,req.body.houseIndex,buyerAccount,{from: buyerAccount, gas: 3000000},function(error, result) {
       if (!error) {
         res.json(result);
       } else {
@@ -312,71 +305,13 @@ app.post("/setCanceled", (req, res) => {
   let _d = new Date();
   let _timeStamp = _d.getTime();
   let _history = req.body.history;
-  _history = _history+buyerAccount+"/"+_timeStamp+"/Cancellation|";
+  _history = _history+"|"+buyerAccount+"/"+_timeStamp+"/Canceled";
   res.json(
-    proxyContract.setPurchaseAsCanceled(req.body.indexHouse,req.body.purchaseIndex,_history,{from: buyerAccount, gas: 3000000})
+    proxyContract.setPurchaseAsCanceled(req.body.houseIndex,req.body.purchaseIndex,_history,{from: buyerAccount, gas: 3000000})
   );
 });
 
 
-app.post("/rateHouseAt", (req, res) => {
-  console.log("rateHouseAt");
-
-  let _newRate = parseFloat(req.body.rate);
-  console.log("_newRate "+_newRate)
-  let _infos = req.body.infos.split("|");
-  console.log("_infos "+_infos)
-
-  let _review = _infos[4];
-  console.log("_review "+_review)
-
-  let _oldInfo = req.body.infos.substring(0,req.body.infos.indexOf(_review));
-
-  let _reviews = _review.split("/");
-  let _rates = _reviews[0].split(";");
-  let _usersStr = _reviews[1];
-  let _usersTab = _newInfos =[];
-  let _newRates ="";
-  let _newUsers="";
-
-  if (_usersStr==""){
-    _rates.push(_newRate);
-    _usersTab.push(req.body.account);
-    _newRates = _newRate+";";
-    _newUsers = req.body.account+";";
-  }
-  else {
-    _usersTab = _usersStr.split(";");
-    let _userIndex = _usersStr.indexOf(req.body.account);
-    console.log("_userIndex "+_userIndex);
-
-    if (_userIndex ==0){
-      _rates.push(_newRate);
-      _usersTab.push(req.body.account);
-    }else{
-      _rates[_userIndex] = _newRate;
-    }
-    
-    
-    for (i =0;i<_usersTab.length;i++){
-      _newRates = _newRates + _rates[i];
-      _newUsers = _newUsers + _usersTab[i];
-    }
-
-    
-    
-  }
-  _newInfos = _oldInfo+_newRates+"/"+_newUsers+"";
-  console.log("_oldInfo "+_oldInfo);
-  console.log("_newInfos "+_newInfos);
-
-  console.log("_newRates "+_newRates);
-  console.log("_newUsers "+_newUsers);
-
-  res.json(
-    proxyContract.updateHouseReviewAt(req.body.indexHouse,_newInfos,{from: buyerAccount, gas: 3000000})
-  );
-});
 
 var server = app.listen(port, () => {
   // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)

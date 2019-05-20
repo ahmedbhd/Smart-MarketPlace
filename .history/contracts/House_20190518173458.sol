@@ -26,9 +26,6 @@ contract House {
     function getDescLocationAreaRoomsReview() public view returns(string memory){
         return _descLocationAreaRoomsReview;
     }
-    function setDescLocationAreaRoomsReview(string memory _infos) public{
-        _descLocationAreaRoomsReview=_infos;
-    }
     function getHistory() public view returns(string memory){
         return _history;
     }
