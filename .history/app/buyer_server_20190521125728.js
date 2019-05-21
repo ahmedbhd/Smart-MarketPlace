@@ -96,8 +96,8 @@ app.post("/getHouseAt", (req, res) => {
 
   let _houseJSON = {
     indexHouse:req.body.indexHouse,
-    description: _desc.charAt(0).toUpperCase() + _desc.slice(1),
-    location: _loc.charAt(0).toUpperCase() + _loc.slice(1),
+    description: _desc.charAt(0).toUpperCase() + string.slice(1),
+    location: _loc,
     area: _area,
     rooms: _rooms,
     history: _history,
@@ -143,8 +143,8 @@ app.get("/getHouses", (req, res) => {
 
       _houseJSON.push({
         indexHouse:i,
-        description: _desc.charAt(0).toUpperCase() + _desc.slice(1),
-        location: _loc.charAt(0).toUpperCase() + _loc.slice(1),
+        description: _desc.charAt(0).toUpperCase() + string.slice(1),
+        location: _loc,
         area: _area,
         rooms: _rooms,
         history: _history,
