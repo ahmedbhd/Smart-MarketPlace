@@ -321,9 +321,6 @@ app.post("/sellHouseAt", (req, res) => {
   let _timeStamp = _d.getTime();
   let _history = req.body.history;
   _history = _history+sellerAccount+"/"+_timeStamp+"/Selling|";
-  console.log(req.body.history)
-
-  console.log(_history)
   res.json(
     proxyContract.sellHouseAt(req.body.indexHouse,_history,{from: sellerAccount,gas: 3000000})
   );

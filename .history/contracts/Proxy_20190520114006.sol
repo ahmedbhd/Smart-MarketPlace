@@ -90,10 +90,9 @@ contract Proxy{
     //     }
     //     return (true);
     // }
-    function sellHouseAt(uint256 _index, string memory _history) public returns(bool){
+    function sellHouseAt(uint256 _index) public returns(bool){
         require(_houses[_index].deleted==false);
         _houses[_index].house.setState(1);
-        _houses[_index].house.setHistory(_history);
         return (true);
     }
     function updateHouseReviewAt(uint256 _index,string memory _infos) public returns(bool){

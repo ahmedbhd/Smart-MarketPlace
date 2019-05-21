@@ -118,44 +118,40 @@ app.post("/getHouseAt", (req, res) => {
 app.get("/getHouses", (req, res) => {
   console.log("getHouses");
   let _houseJSON = [];
-  let _housesNbr = proxyContract.getHouses({from: buyerAccount,gas: 3000000});
+  let _housesNbr = proxyContract.getHousesNbr({from: buyerAccount,gas: 3000000});
   console.log("housesNbr :" + _housesNbr);
-  if (_housesNbr != "") {
-    _housesNbr = _housesNbr.slice(0, _housesNbr.length - 1);
+  for (var i = 1; i <= _housesNbr; i++) {
+    let _thisHouse = proxyContract.getHouseAt(i,{from:buyerAccount,gas: 3000000});
+    let _descLocationAreaRoomsReview = _thisHouse[0];
+    let _history=_thisHouse[1];
+    let _price =_thisHouse[2];
+    let _state = _thisHouse[3];
+    let _owner = _thisHouse[4];
+    let _buyer =_thisHouse[5];
 
-    let _houses = _housesNbr.split(";");
-    _houses.forEach(function(i) {
-      let _thisHouse = proxyContract.getHouseAt(i,{from:buyerAccount,gas: 3000000});
-      let _descLocationAreaRoomsReview = _thisHouse[0];
-      let _history=_thisHouse[1];
-      let _price =_thisHouse[2];
-      let _state = _thisHouse[3];
-      let _owner = _thisHouse[4];
-      let _buyer =_thisHouse[5];
+    let _tab = _descLocationAreaRoomsReview.split("|");
+    let _desc = _tab[0]
+    let _loc = _tab[1]
+    let _area = _tab[2]
+    let _rooms = _tab[3]
+    _rooms = parseInt(_rooms);
+    let _review = _tab[4];
 
-      let _tab = _descLocationAreaRoomsReview.split("|");
-      let _desc = _tab[0]
-      let _loc = _tab[1]
-      let _area = _tab[2]
-      let _rooms = _tab[3]
-      _rooms = parseInt(_rooms);
-      let _review = _tab[4];
-
-      _houseJSON.push({
-        indexHouse:i,
-        description: _desc,
-        location: _loc,
-        area: _area,
-        rooms: _rooms,
-        history: _history,
-        price: _price,
-        state: _state,
-        image: "h_" + i + ".jpg",
-        review: _review,
-        owner: _owner,
-        buyer: _buyer
-      });
+    _houseJSON.push({
+      indexHouse:i,
+      description: _desc,
+      location: _loc,
+      area: _area,
+      rooms: _rooms,
+      history: _history,
+      price: _price,
+      state: _state,
+      image: "h_" + i + ".jpg",
+      review: _review,
+      owner: _owner,
+      buyer: _buyer
     });
+    
   }
   res.json(_houseJSON);
 });
@@ -362,9 +358,9 @@ app.post("/rateHouseAt", (req, res) => {
     }
     
     
-    for (i =0;i<_usersTab.length-1;i++){
-      _newRates = _newRates + _rates[i]+";";
-      _newUsers = _newUsers + _usersTab[i]+";";
+    for (i =0;i<_usersTab.length;i++){
+      _newRates = _newRates + _rates[i];
+      _newUsers = _newUsers + _usersTab[i];
     }
 
     

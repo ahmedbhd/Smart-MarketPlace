@@ -317,15 +317,8 @@ app.get("/getMyInProgressPurchaseList", (req, res) => {
 
 app.post("/sellHouseAt", (req, res) => {
   console.log("sellHouseAt");
-  let _d = new Date();
-  let _timeStamp = _d.getTime();
-  let _history = req.body.history;
-  _history = _history+sellerAccount+"/"+_timeStamp+"/Selling|";
-  console.log(req.body.history)
-
-  console.log(_history)
   res.json(
-    proxyContract.sellHouseAt(req.body.indexHouse,_history,{from: sellerAccount,gas: 3000000})
+    proxyContract.sellHouseAt(req.body.indexHouse,{from: sellerAccount,gas: 3000000})
   );
 });
 
