@@ -178,8 +178,8 @@ var server = app.listen(port, () => {
   console.log("Express Listening at http://localhost:" + port);
   accounts = web3.eth.accounts;
   clearingHouseAccount = accounts[0];
-  bankAccount = accounts[1];
-  insuranceAccount = accounts[2];
+  bankAccount = accounts[3];
+  insuranceAccount = accounts[4];
   console.log("Clearing house account: " + clearingHouseAccount);
   console.log("bank account: " + bankAccount);
   console.log("insurance account: " + insuranceAccount);
@@ -192,7 +192,7 @@ var server = app.listen(port, () => {
 function deploySCProxy() {
   console.log("Contract Proxy deployment...");
   MyContractDeployment = ProxySC;
-  proxyContract = MyContractDeployment.new(clearingHouseAccount,{from: clearingHouseAccount,data: ProxyBytecode,gas: 94000000},function(err, MyContractDeployment) {
+  proxyContract = MyContractDeployment.new(clearingHouseAccount,{from: clearingHouseAccount,data: ProxyBytecode,gas: 3000000},function(err, MyContractDeployment) {
       if (!err) {
         // NOTE: The callback will fire twice!
         // Once the contract has the transactionHash property set and once its deployed on an address.
@@ -426,7 +426,6 @@ function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,hist
     );
   } else {
     console.log("Not enough balance to pay the advance to the bank!");
-    history = history+buyer+"/"+_timeStamp+"/Reverting|";
     proxyContract.setPurchaseAsCanceled(houseIndex, purchaseIndex,history,{from: clearingHouseAccount,gas: 3000000});
   }
 }

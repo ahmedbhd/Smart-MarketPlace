@@ -376,14 +376,7 @@ app.post("/rateHouseAt", (req, res) => {
 
   console.log("_newRates "+_newRates);
   console.log("_newUsers "+_newUsers);
-  try {
-    web3.personal.unlockAccount(buyerAccount, "buyer");
-    console.log("Buyer unlock done!");
 
-} catch(e) {
-    console.log(e);
-    return;
-}
   res.json(
     proxyContract.updateHouseReviewAt(req.body.indexHouse,_newInfos,{from: buyerAccount, gas: 3000000})
   );
@@ -394,19 +387,15 @@ var server = app.listen(port, () => {
 
   console.log("Express Listening at http://localhost:" + port);
   accounts = web3.eth.accounts;
-  buyerAccount = accounts[3];
-  try {
-        web3.personal.unlockAccount(buyerAccount, "buyer",30000);
+  buyerAccount = accounts[2];
+  /* try {
+        web3.personal.unlockAccount(buyerAccount, "producer");
         console.log("Buyer unlock done!");
 
     } catch(e) {
         console.log(e);
         return;
-    }
-
-    web3.eth.sendTransaction({to:buyerAccount, from:accounts[0], value:web3.toWei("1000", "ether")});
-    console.log(web3.eth.getBalance(buyerAccount));
-
+    } */
   console.log("Buyer account: " + buyerAccount);
 });
 

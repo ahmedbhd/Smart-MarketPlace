@@ -334,16 +334,15 @@ var server = app.listen(port, () => {
 
   console.log("Express Listening at http://localhost:" + port);
   accounts = web3.eth.accounts;
-  sellerAccount = accounts[4];
+  sellerAccount = accounts[3];
+  console.log(sellerAccount);
+
   try {
-        web3.personal.unlockAccount(sellerAccount, "seller",30000);
+        web3.personal.unlockAccount(sellerAccount, "utility");
     } catch(e) {
         console.log(e);
         return;
     }
-    web3.eth.sendTransaction({to:sellerAccount, from:accounts[0], value:web3.toWei("1000", "ether")});
-    console.log(web3.eth.getBalance(sellerAccount));
-
   console.log("Seller account: " + sellerAccount);
 });
 

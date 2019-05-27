@@ -336,7 +336,7 @@ var server = app.listen(port, () => {
   accounts = web3.eth.accounts;
   sellerAccount = accounts[4];
   try {
-        web3.personal.unlockAccount(sellerAccount, "seller",30000);
+        web3.personal.unlockAccount(sellerAccount, "seller");
     } catch(e) {
         console.log(e);
         return;

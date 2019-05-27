@@ -426,7 +426,6 @@ function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,hist
     );
   } else {
     console.log("Not enough balance to pay the advance to the bank!");
-    history = history+buyer+"/"+_timeStamp+"/Reverting|";
     proxyContract.setPurchaseAsCanceled(houseIndex, purchaseIndex,history,{from: clearingHouseAccount,gas: 3000000});
   }
 }

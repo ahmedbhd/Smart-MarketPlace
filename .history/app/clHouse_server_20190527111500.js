@@ -178,8 +178,8 @@ var server = app.listen(port, () => {
   console.log("Express Listening at http://localhost:" + port);
   accounts = web3.eth.accounts;
   clearingHouseAccount = accounts[0];
-  bankAccount = accounts[1];
-  insuranceAccount = accounts[2];
+  bankAccount = accounts[3];
+  insuranceAccount = accounts[4];
   console.log("Clearing house account: " + clearingHouseAccount);
   console.log("bank account: " + bankAccount);
   console.log("insurance account: " + insuranceAccount);
@@ -426,7 +426,6 @@ function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,hist
     );
   } else {
     console.log("Not enough balance to pay the advance to the bank!");
-    history = history+buyer+"/"+_timeStamp+"/Reverting|";
     proxyContract.setPurchaseAsCanceled(houseIndex, purchaseIndex,history,{from: clearingHouseAccount,gas: 3000000});
   }
 }

@@ -192,7 +192,7 @@ var server = app.listen(port, () => {
 function deploySCProxy() {
   console.log("Contract Proxy deployment...");
   MyContractDeployment = ProxySC;
-  proxyContract = MyContractDeployment.new(clearingHouseAccount,{from: clearingHouseAccount,data: ProxyBytecode,gas: 94000000},function(err, MyContractDeployment) {
+  proxyContract = MyContractDeployment.new(clearingHouseAccount,{from: clearingHouseAccount,data: ProxyBytecode,gas: 70000000},function(err, MyContractDeployment) {
       if (!err) {
         // NOTE: The callback will fire twice!
         // Once the contract has the transactionHash property set and once its deployed on an address.
@@ -229,7 +229,7 @@ function deploySCProxy() {
 function deploySCToken() {
   console.log("Contract Token deployment...");
   let MyContractDeployment = STTokenSC;
-  tokenContract = MyContractDeployment.new(bankAccount,{from: clearingHouseAccount,data: STTokenBytecode,gas: 3000000 },function(err, MyContractDeployment) {
+  tokenContract = MyContractDeployment.new(bankAccount,{from: clearingHouseAccount,data: STTokenBytecode,gas: 5000000},function(err, MyContractDeployment) {
       if (!err) {
         if (!MyContractDeployment.address) {
           console.log(
@@ -426,7 +426,6 @@ function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,hist
     );
   } else {
     console.log("Not enough balance to pay the advance to the bank!");
-    history = history+buyer+"/"+_timeStamp+"/Reverting|";
     proxyContract.setPurchaseAsCanceled(houseIndex, purchaseIndex,history,{from: clearingHouseAccount,gas: 3000000});
   }
 }
