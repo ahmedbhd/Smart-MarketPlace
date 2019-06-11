@@ -51,7 +51,7 @@ contract Proxy{
         address _owner;
         address _buyer;
         if (!_houses[_index].deleted){
-            _descLocationAreaRoomsImgReview=_houses[_index].house.getDescLocationAreaRoomsImgReview();
+            _descLocationAreaRoomsImgReview=_houses[_index].house.getDescLocationAreaRoomsReview();
             _history=_houses[_index].house.getHistory();
             _price=_houses[_index].house.getPrice();
             _state=_houses[_index].house.getState();
@@ -98,12 +98,12 @@ contract Proxy{
     }
     function updateHouseReviewAt(uint256 _index,string memory _infos) public returns(bool){
         require(_houses[_index].deleted==false);
-        _houses[_index].house.setDescLocationAreaRoomsImgReview(_infos);
+        _houses[_index].house.setDescLocationAreaRoomsReview(_infos);
         return (true);
     }
     function getPurchaseAt(uint256 _index) public view returns(Purchase,string memory,string memory){
         return (_purchases[_index].purchase,
-            _houses[_purchases[_index].purchase.getHouseIndex()].house.getDescLocationAreaRoomsImgReview(),
+            _houses[_purchases[_index].purchase.getHouseIndex()].house.getDescLocationAreaRoomsReview(),
             _houses[_purchases[_index].purchase.getHouseIndex()].house.getHistory()
         );
     }

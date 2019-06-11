@@ -79,21 +79,20 @@ app.get("/getMyBalance", (req, res) => {
 app.post("/getHouseAt", (req, res) => {
   console.log("getHouseAt");
   let _thisHouse = proxyContract.getHouseAt(req.body.indexHouse, {from: buyerAccount,gas: 3000000});
-  let _descLocationAreaRoomsImgReview = _thisHouse[0];
+  let _descLocationAreaRoomsReview = _thisHouse[0];
   let _history=_thisHouse[1];
   let _price =_thisHouse[2];
   let _state = _thisHouse[3];
   let _owner = _thisHouse[4];
   let _buyer =_thisHouse[5];
 
-  let _tab = _descLocationAreaRoomsImgReview.split("|");
+  let _tab = _descLocationAreaRoomsReview.split("|");
   let _desc = _tab[0]
   let _loc = _tab[1]
   let _area = _tab[2]
   let _rooms = _tab[3]
   _rooms = parseInt(_rooms);
-  let _image = _tab[4];
-  let _review = _tab[5];
+  let _review = _tab[4];
 
   let _houseJSON = {
     indexHouse:req.body.indexHouse,
@@ -104,11 +103,11 @@ app.post("/getHouseAt", (req, res) => {
     history: _history,
     price: _price,
     state: _state,
-    image: _image,
+    image: "h_" + req.body.indexHouse + ".jpg",
     review: _review,
     owner: _owner,
     buyer: _buyer,
-    descLocationAreaRoomsReview:_descLocationAreaRoomsImgReview
+    descLocationAreaRoomsReview:_descLocationAreaRoomsReview
   };
   console.log(_houseJSON);
   res.json(_houseJSON);
@@ -127,21 +126,20 @@ app.get("/getHouses", (req, res) => {
     let _houses = _housesNbr.split(";");
     _houses.forEach(function(i) {
       let _thisHouse = proxyContract.getHouseAt(i,{from:buyerAccount,gas: 3000000});
-      let _descLocationAreaRoomsImgReview = _thisHouse[0];
+      let _descLocationAreaRoomsReview = _thisHouse[0];
       let _history=_thisHouse[1];
       let _price =_thisHouse[2];
       let _state = _thisHouse[3];
       let _owner = _thisHouse[4];
       let _buyer =_thisHouse[5];
 
-      let _tab = _descLocationAreaRoomsImgReview.split("|");
+      let _tab = _descLocationAreaRoomsReview.split("|");
       let _desc = _tab[0]
       let _loc = _tab[1]
       let _area = _tab[2]
       let _rooms = _tab[3]
       _rooms = parseInt(_rooms);
-      let _image = _tab[4];
-      let _review = _tab[5];
+      let _review = _tab[4];
 
       _houseJSON.push({
         indexHouse:i,
@@ -152,7 +150,7 @@ app.get("/getHouses", (req, res) => {
         history: _history,
         price: _price,
         state: _state,
-        image: _image,
+        image: "h_" + i + ".jpg",
         review: _review,
         owner: _owner,
         buyer: _buyer
@@ -201,7 +199,7 @@ app.post("/getMyPendingPurchaseAt", (req, res) => {
   let _buyer = _thisPurchase.getBuyer({ from: buyerAccount, gas: 3000000 });
 
   _loanAdvanceMonthlyBankMonthlyInsurance = _strings[0];
-  let _descLocationAreaRoomsImgReview = _thisPurchaseAddr[1].split("|");
+  let _descLocationAreaRoomsReview = _thisPurchaseAddr[1].split("|");
   let _paymentsTab = _loanAdvanceMonthlyBankMonthlyInsurance.split("|");
 
   if (_buyer == buyerAccount) {
@@ -213,7 +211,7 @@ app.post("/getMyPendingPurchaseAt", (req, res) => {
       bank: _addresses[1],
       insurance: _addresses[2],
       indexHouse: _houseIndex,
-      houseDesc: _descLocationAreaRoomsImgReview[0],
+      houseDesc: _descLocationAreaRoomsReview[0],
       history:_history,
       loan: _paymentsTab[0],
       date: _strings[1],
@@ -274,14 +272,14 @@ app.get("/getMyPendingPurchaseList", (req, res) => {
       let _houseIndex = _thisPurchase.getHouseIndex({from: buyerAccount,gas: 3000000});
       let _buyer = _thisPurchase.getBuyer({ from: buyerAccount, gas: 3000000 });
 
-      let _descLocationAreaRoomsImgReview = _thisPurchaseAddr[1].split("|");
+      let _descLocationAreaRoomsReview = _thisPurchaseAddr[1].split("|");
 
       if (_buyer == buyerAccount) {
         _purchases.push({
           ref: _strings[1],
           purchaseIndex: _item,
           indexHouse: _houseIndex,
-          houseDesc: _descLocationAreaRoomsImgReview[0],
+          houseDesc: _descLocationAreaRoomsReview[0],
           date: _strings[1],
           sellerConfirmation: _strings[2],
           buyerConfirmation: _strings[3]
@@ -333,7 +331,7 @@ app.post("/rateHouseAt", (req, res) => {
   let _infos = req.body.infos.split("|");
   console.log("_infos "+_infos)
 
-  let _review = _infos[5];
+  let _review = _infos[4];
   console.log("_review "+_review)
 
   let _oldInfo = req.body.infos.substring(0,req.body.infos.indexOf(_review));
@@ -397,17 +395,16 @@ var server = app.listen(port, () => {
   console.log("Express Listening at http://localhost:" + port);
   accounts = web3.eth.accounts;
   buyerAccount = accounts[3];
-  try {
+  /* try {
         web3.personal.unlockAccount(buyerAccount, "buyer",30000);
         console.log("Buyer unlock done!");
 
     } catch(e) {
         console.log(e);
         return;
-    } 
+    } */
 
     web3.eth.sendTransaction({to:buyerAccount, from:accounts[0], value:web3.toWei("1000", "ether")});
-   
     console.log(web3.eth.getBalance(buyerAccount));
 
   console.log("Buyer account: " + buyerAccount);

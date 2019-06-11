@@ -31,10 +31,6 @@ var clearingHouseAccount = null;
 var wantedEvent = null; // this is the event ------------------
 var confirmedEvent = null;
 
-
-let count=0;
-
-
 //var server = http.createServer(app);
 var io = require("socket.io")();
 io.on("connection", function(socket) {
@@ -398,8 +394,6 @@ function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,hist
   let _loanAdvanceMonthlyBankMonthlyInsurance = _thisPurchase.getLoanAdvanceMonthlyBankMonthlyInsurance({from: clearingHouseAccount,gas: 3000000});
   let _infosTab = _loanAdvanceMonthlyBankMonthlyInsurance.split("|");
   let _advance = parseFloat(_infosTab[1]);
-  let _amounForBank = parseFloat(_infosTab[2]);
-  let _amounForInsurance = parseFloat(_infosTab[3]);
   console.log("advance :" + _advance);
   if (_buyerBalance >= _advance) {
     let _d = new Date();
@@ -420,16 +414,11 @@ function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,hist
                 );
               } else {
                 console.log("transfer success");
-                tokenContract.transferFrom(bankAccount, owner, price, {from:clearingHouseAccount, gas:3000000}, function (error , result){
-                  if (!error){
-                    payDebt(houseIndex,buyer,_amounForBank,_amounForInsurance,history);
-                  }
-                });
+                tokenContract.transferFrom(bankAccount, owner, price, {from:clearingHouseAccount, gas:3000000});
               }
             }
           );
           console.log("transfer success");
-          
         } else {
           console.log("transfer error " + error);
         }
@@ -437,8 +426,6 @@ function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,hist
     );
   } else {
     console.log("Not enough balance to pay the advance to the bank!");
-    let _d = new Date();
-    let _timeStamp = _d.getTime();
     history = history+buyer+"/"+_timeStamp+"/Reverting|";
     proxyContract.setPurchaseAsCanceled(houseIndex, purchaseIndex,history,{from: clearingHouseAccount,gas: 3000000});
   }
@@ -446,61 +433,6 @@ function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,hist
 
 
 
-function payDebt(houseIndex,buyer, amountForBank, amountForInsurance , history){
-
-  var refreshId = setInterval(function() {
-    intervalFunc(houseIndex,buyer, amountForBank, amountForInsurance , history);
-    if (count == 5) {
-      console.log("exit loop");
-      count = 0;
-      clearInterval(refreshId);
-    }
-  }, 20000);
-
-  //setInterval(intervalFunc, 20000,houseIndex,buyer, amountForBank, amountForInsurance , history);
-
-}
-
-function intervalFunc(houseIndex,buyer, amountForBank, amountForInsurance , history){
-  console.log(count);
-  let _currentBuyerBalance = tokenContract.balanceOf(buyer, {from: clearingHouseAccount,gas: 3000000});
-  let _buyerBalance = parseInt(_currentBuyerBalance);
-  let payment = false;
-  if (_buyerBalance >= amountForBank+amountForInsurance) {
-    tokenContract.transferFrom(buyer,bankAccount,amountForBank,{from: clearingHouseAccount, gas: 3000000},function(error, result) {
-        if (!error) {
-          console.log("payment bank done ");
-
-          tokenContract.transferFrom(buyer,insuranceAccount,amountForInsurance,{from: clearingHouseAccount, gas: 3000000},function(error, result) {
-            if (!error) {
-              console.log("payment insurance done ");
-              count = 0;
-            } else {
-              console.log("payment insurance error " + error);
-              count++;
-            }
-          });
-        } else {
-          console.log("payment bank error " + error);
-          count++;
-        }
-      });
-
-    
-
-   
+function payDebt(buyer, amountForBank, amountForInsurance){
   
-  }else if (count<=3){
-    count++;
-  } else {
-    count++;
-    let _d = new Date();
-    let _timeStamp = _d.getTime();
-    history = bankAccount+"/"+_timeStamp+"/Frozen|"+history;
-    console.log(houseIndex);
-    console.log(buyer);
-    console.log(bankAccount);
-    
-    proxyContract.transferHouseFrom(houseIndex,buyer,bankAccount,history,{from:clearingHouseAccount, gas:3000000});
-  }
 }

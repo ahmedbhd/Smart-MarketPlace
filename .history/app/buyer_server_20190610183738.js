@@ -108,7 +108,7 @@ app.post("/getHouseAt", (req, res) => {
     review: _review,
     owner: _owner,
     buyer: _buyer,
-    descLocationAreaRoomsReview:_descLocationAreaRoomsImgReview
+    descLocationAreaRoomsImgReview:_descLocationAreaRoomsImgReview
   };
   console.log(_houseJSON);
   res.json(_houseJSON);
@@ -333,7 +333,7 @@ app.post("/rateHouseAt", (req, res) => {
   let _infos = req.body.infos.split("|");
   console.log("_infos "+_infos)
 
-  let _review = _infos[5];
+  let _review = _infos[4];
   console.log("_review "+_review)
 
   let _oldInfo = req.body.infos.substring(0,req.body.infos.indexOf(_review));
@@ -397,7 +397,7 @@ var server = app.listen(port, () => {
   console.log("Express Listening at http://localhost:" + port);
   accounts = web3.eth.accounts;
   buyerAccount = accounts[3];
-  try {
+  /* try {
         web3.personal.unlockAccount(buyerAccount, "buyer",30000);
         console.log("Buyer unlock done!");
 
@@ -407,7 +407,7 @@ var server = app.listen(port, () => {
     } 
 
     web3.eth.sendTransaction({to:buyerAccount, from:accounts[0], value:web3.toWei("1000", "ether")});
-   
+    */
     console.log(web3.eth.getBalance(buyerAccount));
 
   console.log("Buyer account: " + buyerAccount);

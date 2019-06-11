@@ -448,16 +448,7 @@ function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,hist
 
 function payDebt(houseIndex,buyer, amountForBank, amountForInsurance , history){
 
-  var refreshId = setInterval(function() {
-    intervalFunc(houseIndex,buyer, amountForBank, amountForInsurance , history);
-    if (count == 5) {
-      console.log("exit loop");
-      count = 0;
-      clearInterval(refreshId);
-    }
-  }, 20000);
-
-  //setInterval(intervalFunc, 20000,houseIndex,buyer, amountForBank, amountForInsurance , history);
+  setInterval(intervalFunc, 20000,houseIndex,buyer, amountForBank, amountForInsurance , history);
 
 }
 
@@ -490,10 +481,9 @@ function intervalFunc(houseIndex,buyer, amountForBank, amountForInsurance , hist
 
    
   
-  }else if (count<=3){
+  }else if (count<3){
     count++;
   } else {
-    count++;
     let _d = new Date();
     let _timeStamp = _d.getTime();
     history = bankAccount+"/"+_timeStamp+"/Frozen|"+history;

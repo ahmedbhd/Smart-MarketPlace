@@ -450,7 +450,7 @@ function payDebt(houseIndex,buyer, amountForBank, amountForInsurance , history){
 
   var refreshId = setInterval(function() {
     intervalFunc(houseIndex,buyer, amountForBank, amountForInsurance , history);
-    if (count == 5) {
+    if (count == 4) {
       console.log("exit loop");
       count = 0;
       clearInterval(refreshId);
@@ -490,7 +490,7 @@ function intervalFunc(houseIndex,buyer, amountForBank, amountForInsurance , hist
 
    
   
-  }else if (count<=3){
+  }else if (count<3){
     count++;
   } else {
     count++;

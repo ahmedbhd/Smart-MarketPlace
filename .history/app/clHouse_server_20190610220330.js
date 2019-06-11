@@ -437,8 +437,6 @@ function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,hist
     );
   } else {
     console.log("Not enough balance to pay the advance to the bank!");
-    let _d = new Date();
-    let _timeStamp = _d.getTime();
     history = history+buyer+"/"+_timeStamp+"/Reverting|";
     proxyContract.setPurchaseAsCanceled(houseIndex, purchaseIndex,history,{from: clearingHouseAccount,gas: 3000000});
   }
@@ -448,21 +446,12 @@ function confirmPurchaseWithLoan(owner,buyer,price,houseIndex,purchaseIndex,hist
 
 function payDebt(houseIndex,buyer, amountForBank, amountForInsurance , history){
 
-  var refreshId = setInterval(function() {
-    intervalFunc(houseIndex,buyer, amountForBank, amountForInsurance , history);
-    if (count == 5) {
-      console.log("exit loop");
-      count = 0;
-      clearInterval(refreshId);
-    }
-  }, 20000);
-
-  //setInterval(intervalFunc, 20000,houseIndex,buyer, amountForBank, amountForInsurance , history);
+  setInterval(intervalFunc, 20000,houseIndex,buyer, amountForBank, amountForInsurance , history);
 
 }
 
 function intervalFunc(houseIndex,buyer, amountForBank, amountForInsurance , history){
-  console.log(count);
+  
   let _currentBuyerBalance = tokenContract.balanceOf(buyer, {from: clearingHouseAccount,gas: 3000000});
   let _buyerBalance = parseInt(_currentBuyerBalance);
   let payment = false;
@@ -470,37 +459,32 @@ function intervalFunc(houseIndex,buyer, amountForBank, amountForInsurance , hist
     tokenContract.transferFrom(buyer,bankAccount,amountForBank,{from: clearingHouseAccount, gas: 3000000},function(error, result) {
         if (!error) {
           console.log("payment bank done ");
-
-          tokenContract.transferFrom(buyer,insuranceAccount,amountForInsurance,{from: clearingHouseAccount, gas: 3000000},function(error, result) {
-            if (!error) {
-              console.log("payment insurance done ");
-              count = 0;
-            } else {
-              console.log("payment insurance error " + error);
-              count++;
-            }
-          });
+          payment = true;
         } else {
           console.log("payment bank error " + error);
-          count++;
         }
       });
 
-    
+    tokenContract.transferFrom(buyer,insuranceAccount,amountForInsurance,{from: clearingHouseAccount, gas: 3000000},function(error, result) {
+      if (!error) {
+        console.log("payment insurance done ");
+        payment= true;
+      } else {
+        console.log("payment insurance error " + error);
+      }
+    });
 
-   
+    if (payment) 
+      count = 0;
+    else
+      count++;
   
-  }else if (count<=3){
+  }else if (count<3){
     count++;
   } else {
-    count++;
     let _d = new Date();
     let _timeStamp = _d.getTime();
     history = bankAccount+"/"+_timeStamp+"/Frozen|"+history;
-    console.log(houseIndex);
-    console.log(buyer);
-    console.log(bankAccount);
-    
     proxyContract.transferHouseFrom(houseIndex,buyer,bankAccount,history,{from:clearingHouseAccount, gas:3000000});
   }
 }

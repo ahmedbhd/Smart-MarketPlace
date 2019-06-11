@@ -53,9 +53,7 @@ app.get("/getMyBalance", (req, res) => {
 app.post("/addHouse", (req, res) => {
   console.log("addhouse");
   console.log("acc " + sellerAccount);
-  console.log(req.body.image);
-  let _descLocationAreaRoomsImgReview = req.body.description + "|" + req.body.location+"|"+req.body.area + "|" + req.body.rooms+ "|"+req.body.image+"|0/";
-  
+  let _descLocationAreaRoomsImgReview = req.body.description + "|" + req.body.location+"|"+req.body.area + "|" + req.body.rooms+ req.body.image+"|0/";
   let _d = new Date();
   let _timeStamp = _d.getTime();
   let _history = sellerAccount+"/"+_timeStamp+"/Adding|"
@@ -107,8 +105,7 @@ app.post("/getHouseAt", (req, res) => {
     image: _image,
     review: _review,
     owner: _owner,
-    buyer: _buyer,
-    descLocationAreaRoomsImgReview:_descLocationAreaRoomsImgReview
+    buyer: _buyer
   };
   console.log(_houseJSON);
   res.json(_houseJSON);
@@ -340,14 +337,14 @@ var server = app.listen(port, () => {
   console.log("Express Listening at http://localhost:" + port);
   accounts = web3.eth.accounts;
   sellerAccount = accounts[4];
-  try {
+  /* try {
         web3.personal.unlockAccount(sellerAccount, "seller",30000);
     } catch(e) {
         console.log(e);
         return;
     } 
     web3.eth.sendTransaction({to:sellerAccount, from:accounts[0], value:web3.toWei("1000", "ether")});
-   
+    */
     console.log(web3.eth.getBalance(sellerAccount));
 
   console.log("Seller account: " + sellerAccount);
